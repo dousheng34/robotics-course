@@ -558,7 +558,7 @@ em{font-style:italic;}
       <h2 class="pg-title">Әдіс<em>теме</em></h2>
       <div class="m-tab-bar">
         <button class="m-tab on" onclick="showMTab('ar',this)">Action Research</button>
-        <button class="m-tab" onclick="showMTab('cycle',this)">AR 3 Кезең</button>
+        <button class="m-tab" onclick="showMTab('cycle',this)">AR Циклдары</button>
         <button class="m-tab" onclick="showMTab('tools',this)">Құралдар</button>
         <button class="m-tab" onclick="showMTab('eval',this)">Бағалау</button>
       </div>
@@ -1674,23 +1674,23 @@ function showMTab(tab,btn){
     ar:`<div class="card card-lg">
       <div class="c-title"><div class="c-icon ci-t">◇</div><span class="serif">Action Research <em style="font-style:italic;color:var(--terra)">тәсілі</em></span></div>
       <div style="font-size:15px;color:var(--ink2);line-height:1.8;margin-bottom:22px;">
-        <strong>Action Research (AR)</strong> — мұғалімнің өз тәжірибесін зерттеп, жақсартуға бағытталған ғылыми-практикалық тәсіл. AR 3 кезеңнен тұрады: мәселені анықтау → іске асыру → рефлексия.
+        <strong>Action Research (AR)</strong> — мұғалімнің өз тәжірибесін зерттеп, жақсартуға бағытталған ғылыми-практикалық тәсіл. AR 4 негізгі кезеңнен тұрады: жоспарлау → әрекет ету → бақылау → рефлексия.
       </div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;">
-        ${[['1','Зерттеу','Проблеманы анықтау, гипотеза құру, мақсат белгілеу','ci-t'],
-           ['2','Іске асыру','Сабақтарды өткізу, деректер жинау, бақылау','ci-a'],
-           ['3','Рефлексия','Талдау, қорытынды жасау, жетілдіру жоспары','ci-tl']].map(s=>
-          `<div style="background:var(--cream);border-radius:var(--r);padding:22px;">
+        ${[['1','Жоспарлау','Проблеманы анықтау, гипотеза құру, зерттеу жоспары мен мақсатын белгілеу','ci-t'],
+           ['2','Әрекет ету','Сабақтарды өткізу, жаңа әдіс-тәсілдер мен педагогикалық технологияларды қолдану','ci-a'],
+           ['3','Бақылау','Сабақ барысын бақылау, деректер жинау (оқушылар жұмысы, сауалнамалар)','ci-o'],
+           ['4','Рефлексия','Нәтижелерді талдау, бағалау, қорытынды жасау және келесі циклді жоспарлау','ci-tl']].map(s=>
+          `<div class="card" style="background:var(--cream);border-radius:var(--r);padding:22px;margin-bottom:0;">
             <div class="serif" style="font-size:38px;font-weight:700;color:var(--terra);line-height:1;margin-bottom:10px;">${s[0]}</div>
             <div style="font-weight:800;font-size:15px;margin-bottom:6px;">${s[1]}</div>
             <div style="font-size:13px;color:var(--muted);line-height:1.65;">${s[2]}</div>
           </div>`).join('')}
       </div></div>`,
     cycle:`<div class="card card-lg">
-      <div class="c-title"><div class="c-icon ci-p">◇</div><span class="serif">AR 3 Кезең <em style="font-style:italic;color:var(--plum)">жоспары</em></span></div>
-      ${[['1-кезең','Мәселені анықтау','Зерттеу мақсатын белгілеу, болжам құру, деректер жинау жоспары','ci-t'],
-         ['2-кезең','Іске асыру','Сабақтарды өткізу, деректер жинау, бақылау жүргізу','ci-a'],
-         ['3-кезең','Рефлексия','Нәтижелерді талдау, қорытынды жасау, жетілдіру жоспары','ci-tl']].map(c=>
+      <div class="c-title"><div class="c-icon ci-p">◇</div><span class="serif">AR <em style="font-style:italic;color:var(--plum)">циклдары</em></span></div>
+      ${[['1-цикл','Танысу және диагностика','Бастапқы деңгейді анықтау, Робототехника конструкторларымен таныстыру','ci-t'],
+         ['2-цикл','Техникалық меңгеру','Датчиктерді қолдану, алғашқы жобалар жасау...','ci-a']].map(c=>
         `<div style="display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--line2);">
           <div class="c-icon ${c[3]}" style="width:46px;height:46px;flex-shrink:0;font-weight:800;font-size:13px;">${c[0].split('-')[0]}</div>
           <div>
@@ -1706,7 +1706,7 @@ function showMTab(tab,btn){
            ['Tinkercad','Онлайн Arduino симуляциясы мен 3D дизайн — браузерде.','ci-a','🖥'],
            ['Scratch / Blockly','Блок-схема арқылы визуалды бағдарламалау. Бастаушыларға.','ci-o','🧩'],
            ['Google Classroom','Тапсырмалар, тест, материалдарды бір платформада жинау.','ci-p','📚']].map(t=>
-          `<div style="background:var(--cream);border-radius:var(--r);padding:22px;">
+          `<div class="card" style="background:var(--cream);border-radius:var(--r);padding:22px;margin-bottom:0;">
             <div class="c-icon ${t[2]}" style="width:40px;height:40px;margin-bottom:14px;font-size:18px;">${t[3]}</div>
             <div style="font-weight:800;font-size:15.5px;margin-bottom:6px;">${t[0]}</div>
             <div style="font-size:13px;color:var(--muted);line-height:1.65;">${t[1]}</div>
@@ -1714,21 +1714,38 @@ function showMTab(tab,btn){
       </div></div>`,
     eval:`<div class="card card-lg">
       <div class="c-title"><div class="c-icon ci-a">◇</div><span class="serif">Бағалау <em style="font-style:italic;color:var(--amber)">жүйесі</em></span></div>
-      <div style="font-size:15px;color:var(--muted);margin-bottom:22px;line-height:1.75;">Курс бойынша жиынтық баға 4 компонентке негізделеді:</div>
-      ${[['ТЖБ — Тоқсандық жазба бақылау','25%','ci-p','p-p'],
-         ['БЖБ — Бөлім жиынтық бағалау','20%','ci-a','p-a'],
-         ['Тесттер (мұғалім + диагностика)','30%','ci-t','p-t'],
-         ['Жоба қорғау','25%','ci-tl','p-tl']].map(b=>
-        `<div style="display:flex;align-items:center;justify-content:space-between;padding:15px 0;border-bottom:1px solid var(--line2);">
-          <div style="display:flex;align-items:center;gap:12px;">
-            <div class="c-icon ${b[2]}" style="width:38px;height:38px;">%</div>
-            <div style="font-size:15px;font-weight:700;">${b[0]}</div>
-          </div>
-          <span class="pill ${b[3]}" style="font-size:14px;padding:6px 16px;">${b[1]}</span>
-        </div>`).join('')}
-      </div>`,
+      <div style="font-size:15px;color:var(--muted);margin-bottom:22px;line-height:1.75;">
+        Оқушылардың робототехника курсы бойынша дағдыларын бағалау жүйесі келесі негізгі компоненттерге бағытталған:
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="gb-table" style="width:100%; border-collapse:collapse; min-width:550px;">
+          <thead>
+            <tr>
+              <th style="padding:14px; text-align:left; background:var(--cream2); font-size:10px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--muted); border-bottom:2px solid var(--line2); width:35%;">Дағды компоненті</th>
+              <th style="padding:14px; text-align:left; background:var(--cream2); font-size:10px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--muted); border-bottom:2px solid var(--line2);">Мазмұны мен белгілері</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${[
+              ['Жобалау ойлауы<br><span style="font-size:11.5px;color:var(--muted);font-weight:normal;">(Design Thinking)</span>', 'Мәселені анықтау, шешім іздеу, баламаларды салыстыру, ең тиімдісін таңдау'],
+              ['Кеңістіктік ойлау<br><span style="font-size:11.5px;color:var(--muted);font-weight:normal;">(Spatial Thinking)</span>', 'Роботтың бөліктерін кеңістікте елестету, олардың өзара орналасуын жоспарлау, жинақтау ретін ойша анықтау'],
+              ['Алгоритмдік ойлау<br><span style="font-size:11.5px;color:var(--muted);font-weight:normal;">(Algorithmic Thinking)</span>', 'Мәселені қадамдарға бөлу, алгоритм жасау, қайталану мен шартты анықтау'],
+              ['Сыни ойлау<br><span style="font-size:11.5px;color:var(--muted);font-weight:normal;">(Critical Thinking)</span>', 'Нәтижені объективті бағалау, қателерді анықтау, жетілдіру жолын ұсыну'],
+              ['Шығармашылық ойлау<br><span style="font-size:11.5px;color:var(--muted);font-weight:normal;">(Creative Thinking)</span>', 'Жаңа идея ұсыну, стандартты емес шешім табу, бірегей жоба жасау'],
+              ['Коммуникативтік дағды<br><span style="font-size:11.5px;color:var(--muted);font-weight:normal;">(Communication)</span>', 'Жобаны ауызша және жазбаша таныстыру, командада жұмыс жасау, кері байланыс беру']
+            ].map(row => `
+              <tr style="border-bottom:1px solid var(--line2); transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='rgba(194, 67, 30, 0.02)'" onmouseout="this.style.backgroundColor='transparent'">
+                <td style="padding:16px 14px; font-weight:700; color:var(--ink); line-height:1.4;">${row[0]}</td>
+                <td style="padding:16px 14px; color:var(--ink2); line-height:1.65; font-size:14px;">${row[1]}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`,
   };
   document.getElementById('mTabContent').innerHTML=c[tab]||'';
+  setTimeout(init3DTilt, 50);
 }
 
 // ============================================================
