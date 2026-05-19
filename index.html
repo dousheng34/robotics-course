@@ -520,7 +520,7 @@ em{font-style:italic;}
       <div class="sb-item" id="ni-method" onclick="go('method')"><span class="sb-icon">◇</span>Әдістеме</div>
       <div class="sb-item" id="ni-test" onclick="go('test')"><span class="sb-icon">✦</span>Диагностикалық тест</div>
       <div class="sb-item" id="ni-lessons" onclick="go('lessons')"><span class="sb-icon">▣</span>Сабақтар</div>
-      <div class="sb-item" id="ni-tasks" onclick="go('tasks')"><span class="sb-icon">▽</span>Тапсырмалар</div>
+      <div class="sb-item" id="ni-tasks" onclick="go('tasks')"><span class="sb-icon">▽</span>Жобалар</div>
     </div>
     <div class="sb-sec">
       <div class="sb-lbl">Бақылау</div>
@@ -538,7 +538,7 @@ em{font-style:italic;}
     <div id="s-home" class="section on">
       <div class="eyebrow">Басты бет</div>
       <h2 class="pg-title">Сәлем, <em id="homeGreetName">оқушы</em>!</h2>
-      <p class="pg-sub">Академия академиясына қош келдіңіз. Сабақтар, тесттер, тапсырмалар — бәрі бір жерде.</p>
+      <p class="pg-sub">Академия академиясына қош келдіңіз. Сабақтар, тесттер, жобалар — бәрі бір жерде.</p>
       <div class="stats-row" id="homeStats"></div>
       <div class="g2">
         <div class="card">
@@ -546,7 +546,7 @@ em{font-style:italic;}
           <div id="upcomingL"></div>
         </div>
         <div class="card">
-          <div class="c-title"><div class="c-icon ci-p">▽</div>Соңғы <em class="serif" style="font-style:italic;color:var(--plum)">тапсырмалар</em></div>
+          <div class="c-title"><div class="c-icon ci-p">🤖</div>Соңғы <em class="serif" style="font-style:italic;color:var(--plum)">жобалар</em></div>
           <div id="recentTasksL"></div>
         </div>
       </div>
@@ -582,13 +582,18 @@ em{font-style:italic;}
       <div id="lList"></div>
     </div>
 
-    <!-- TASKS -->
+    <!-- TASKS / PROJECTS -->
     <div id="s-tasks" class="section">
-      <div class="eyebrow">Тапсырмалар</div>
-      <h2 class="pg-title">Тапсырма<em>лар</em></h2>
-      <div id="teacherTaskPanel"></div>
-      <div id="teacherTestCreatePanel"></div>
-      <div id="tasksList"></div>
+      <div class="eyebrow">Жобалар</div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
+        <h2 class="pg-title" style="margin:0;">Жобалар <em>конструкторы</em></h2>
+        <button class="btn b-terra" onclick="openAddProjectModal()">+ Жоба қосу</button>
+      </div>
+      <div id="projectsList" class="g2"></div>
+      <!-- Hidden elements to prevent null reference errors in background scripts -->
+      <div id="teacherTaskPanel" style="display:none;"></div>
+      <div id="teacherTestCreatePanel" style="display:none;"></div>
+      <div id="tasksList" style="display:none;"></div>
     </div>
 
     <!-- GRADES -->
@@ -647,8 +652,16 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 var S = {
   role:'student', user:null, profile:null,
   tStarted:false, tDone:false, tAns:{}, tQ:0,
-  fbStar:5, tasks:[], teacherTests:[], lessons:[], diagQuestions:[]
+  fbStar:5, tasks:[], teacherTests:[], lessons:[], diagQuestions:[],
+  customProjects:[]
 };
+var defaultProjects = [
+  {id:'p1',title:'Ақылды шлагбаум (Smart Barrier)',desc:'Датчик жақындаған автокөлікті анықтап, шлагбаумды автоматты түрде көтереді.',components:'Lego EV3, ультрадыбыстық датчик, сервомотор',videoUrl:'https://youtube.com/watch?v=dQw4w9WgXcQ'},
+  {id:'p2',title:'Сызық бойымен қозғалатын робот (Line Follower)',desc:'Екі түс датчигінің көмегімен қара сызықты бойлай жүретін робот.',components:'Lego EV3, түс датчиктері, орташа моторлар',videoUrl:'https://youtube.com/watch?v=dQw4w9WgXcQ'},
+  {id:'p3',title:'Кедергілерден айналып өтетін робот (Obstacle Avoidance)',desc:'Алдындағы кедергіні көріп, соқтығыспай айналып өтетін интеллектуалды робот.',components:'Lego EV3, ультрадыбыстық және жанасу датчигі',videoUrl:'https://youtube.com/watch?v=dQw4w9WgXcQ'},
+  {id:'p4',title:'Ақылды үй желдеткіші (Smart Fan)',desc:'Температура мен бөлмедегі адамды анықтап автоматты түрде қосылатын желдеткіш.',components:'Lego EV3, температура датчигі, гироскопиялық датчик',videoUrl:'https://youtube.com/watch?v=dQw4w9WgXcQ'},
+  {id:'p5',title:'Робот-манипулятор (Robot Arm)',desc:'Заттарды бір орыннан екінші орынға тасымалдайтын және сұрыптайтын манипулятор қондырғысы.',components:'Lego EV3, жанасу датчигі, сервомоторлар',videoUrl:'https://youtube.com/watch?v=dQw4w9WgXcQ'}
+];
 var localLessons = [
   {id:'l1',date:'08.01.2026',dn:'08',dm:'ҚАҢ',type:'Сабақ',title:'Роботтар туралы: тарих пен болашақ',desc:'Роботтар тарихы, қолданылу салалары, Қазақстандағы робототехника дамуы.',videoUrl:'',tasks:['5 робот түрін дәптерге жазу','Tinkercad-та аккаунт ашу','Топтық талқылау: робот не істей алады?']},
   {id:'l2',date:'15.01.2026',dn:'15',dm:'ҚАҢ',type:'Сабақ',title:'Датчиктер мен Arduino негіздері',desc:'Arduino платасы, датчик түрлері, алғашқы байланыстар, LED жарықтандыру.',videoUrl:'',tasks:['LED жарықтандыру схемасы','Датчик диаграммасы сызу','Tinkercad симуляциясы']},
@@ -767,6 +780,15 @@ async function initApp(){
   if(role==='student'){document.getElementById('ni-progress').style.display='flex';document.getElementById('gradesLabel').textContent='Менің бағаларым';}
   else{document.getElementById('ni-progress').style.display='none';document.getElementById('gradesLabel').textContent='Бағалар журналы';}
   if(window.innerWidth<=960) document.getElementById('sidebar').classList.add('closed');
+  
+  // Load custom projects from localStorage
+  var saved = localStorage.getItem('custom_projects_' + (S.user ? S.user.id : 'anon'));
+  if (saved) {
+    try { S.customProjects = JSON.parse(saved); } catch(e) { S.customProjects = []; }
+  } else {
+    S.customProjects = [];
+  }
+
   await loadTasksFromDB();
   await loadStudentsFromDB();
   await loadDiagQuestionsFromDB();
@@ -832,7 +854,7 @@ function renderHomeStats(){
     {n:localLessons.length,l:'Барлық сабақ',s:'3 цикл',c:'ci-t',icon:'▣'},
     {n:S.teacherTests.length+1,l:'Тест',s:'Диагностика+Мұғалім',c:'ci-a',icon:'✦'},
     {n:S.tasks.filter(t=>t.type==='tjb').length,l:'ТЖБ',s:'Тоқсандық',c:'ci-p',icon:'◆'},
-    {n:S.tasks.length+S.teacherTests.length,l:'Тапсырма',s:'Жарияланған',c:'ci-tl',icon:'▽'},
+    {n:defaultProjects.length + S.customProjects.length,l:'Жобалар',s:'Конструктор',c:'ci-tl',icon:'🤖'},
   ];
   document.getElementById('homeStats').innerHTML=d.map(x=>
     `<div class="st-card">
@@ -859,15 +881,15 @@ function renderUpcoming(){
 }
 function renderRecentTasks(){
   var el=document.getElementById('recentTasksL');
-  var tasks=S.tasks.slice(0,4);
-  if(!tasks.length){el.innerHTML='<div style="color:var(--muted);font-size:14px;padding:16px 0;font-weight:500;">Тапсырмалар әлі жоқ</div>';return;}
-  el.innerHTML=tasks.map(t=>`
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line2);">
+  var projects=[...defaultProjects, ...S.customProjects].slice(-4).reverse();
+  if(!projects.length){el.innerHTML='<div style="color:var(--muted);font-size:14px;padding:16px 0;font-weight:500;">Жобалар әлі жоқ</div>';return;}
+  el.innerHTML=projects.map(p=>`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line2);cursor:pointer;" onclick="go('tasks')">
       <div>
-        <div style="font-size:14px;font-weight:700;margin-bottom:3px;">${t.title}</div>
-        <div style="font-size:11.5px;color:var(--muted);">${typeLabel(t.type)}</div>
+        <div style="font-size:14.5px;font-weight:700;margin-bottom:3px;color:var(--ink);">${p.title}</div>
+        <div style="font-size:11.5px;color:var(--muted);">${p.components.split(',')[0]}</div>
       </div>
-      <span class="pill ${typePill(t.type)}">${typeLabel(t.type)}</span>
+      <span class="pill p-t">Жоба</span>
     </div>`).join('');
 }
 function typeLabel(t){return {tjb:'ТЖБ',bzh:'БЖБ',test:'Тест',video:'Видео тапсырма',task:'Тапсырма',diag_test:'Диагн.тест'}[t]||t;}
@@ -1189,208 +1211,93 @@ async function addLesson(){
 // TASKS
 // ============================================================
 function renderTasksSection(){
-  var isTeacher=S.role==='teacher';
-  if(isTeacher){
-    document.getElementById('teacherTaskPanel').innerHTML=`
-      <div class="t-panel">
-        <div class="t-panel-title">Жаңа тапсырма жариялау</div>
-        <div class="t-panel-sub">ТЖБ, БЖБ, видео тапсырма немесе кез-келген жаттығу жариялаңыз</div>
-        <div class="teacher-badge">👨‍🏫 Мұғалім панелі</div>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Тапсырма атауы</label>
-            <input class="form-input" id="taskTitle" placeholder="Мысалы: 1-ТЖБ: Роботика негіздері">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Тапсырма түрі</label>
-            <select class="form-select" id="taskType">
-              <option value="tjb">📝 ТЖБ — Тоқсандық жазба бақылау</option>
-              <option value="bzh">📋 БЖБ — Бөлім жиынтық бағалау</option>
-              <option value="task">📌 Тапсырма</option>
-              <option value="video">🎬 Видео тапсырма</option>
-            </select>
-          </div>
+  var projects = [...defaultProjects, ...S.customProjects];
+  var el = document.getElementById('projectsList');
+  if(!el) return;
+  el.innerHTML = projects.map((p, idx) => {
+    var vidBtn = p.videoUrl ? `<button class="btn b-outline b-sm" onclick="openVideo('${p.videoUrl}')">📹 Видео</button>` : '';
+    var delBtn = p.id.startsWith('custom_') ? `<button class="btn b-outline b-sm" onclick="deleteCustomProject('${p.id}')" style="margin-left:auto;color:var(--terra);border-color:rgba(194, 67, 30, 0.2);">🗑 Жою</button>` : '';
+    return `<div class="card" style="display:flex; flex-direction:column; justify-content:space-between; height:100%; min-height: 250px;">
+      <div>
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+          <span class="pill p-teal" style="font-size:11px; font-weight:800; letter-spacing:1px; text-transform:uppercase;">🤖 Жоба #${idx+1}</span>
         </div>
-        <div class="form-group">
-          <label class="form-label">Тапсыру мерзімі</label>
-          <input class="form-input" id="taskDeadline" type="date">
+        <div class="serif" style="font-size:18px; font-weight:800; color:var(--ink); margin-bottom:8px; line-height:1.35;">${p.title}</div>
+        <div style="font-size:13.5px; color:var(--ink2); line-height:1.6; margin-bottom:14px;">${p.desc}</div>
+      </div>
+      <div>
+        <div style="background:var(--cream2); padding:10px 14px; border-radius:var(--r); margin-bottom:16px;">
+          <div style="font-size:11px; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;">Бөлшектер & датчиктер:</div>
+          <div style="font-size:12.5px; color:var(--ink); font-weight:600;">${p.components}</div>
         </div>
-        <div class="form-group">
-          <label class="form-label">Сипаттама / нұсқаулық</label>
-          <textarea class="form-ta" id="taskDesc" placeholder="Тапсырманың мақсаты, орындау нұсқаулығы..."></textarea>
+        <div style="display:flex; gap:8px; align-items:center;">
+          ${vidBtn}
+          ${delBtn}
         </div>
-        <div class="form-group">
-          <label class="form-label">YouTube видео (қосымша)</label>
-          <input class="form-input" id="taskVideo" placeholder="https://youtube.com/watch?v=...">
-        </div>
-        <button class="btn b-terra" onclick="addTask()">+ Тапсырма жариялау</button>
-      </div>`;
-
-    document.getElementById('teacherTestCreatePanel').innerHTML=`
-      <div class="t-panel" style="background:#F5F0FA;border-color:var(--plum);">
-        <div class="t-panel-title" style="color:var(--plum);">Жаңа тест жасау (сынып үшін)</div>
-        <div class="t-panel-sub">Сұрақтарды қолмен немесе файлдан жүктеп, оқушыларға тест тапсырыңыз</div>
-        <div class="teacher-badge" style="background:var(--plumL);color:var(--plum);">🧪 Тест конструкторы</div>
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Тест атауы</label>
-            <input class="form-input" id="testTitle" placeholder="Мысалы: 1-тоқсан жиынтық тесті">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Мерзімі</label>
-            <input class="form-input" id="testDeadline" type="date">
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Сипаттама</label>
-          <textarea class="form-ta" id="testDesc" placeholder="Тест қандай тақырыпты қамтиды?"></textarea>
-        </div>
-        <div class="form-group">
-          <label class="form-label">CSV/TXT файлдан жүктеу (формат: сұрақ;A;B;C;D;дұрыс_индекс)</label>
-          <div class="upload-zone" onclick="document.getElementById('testFile').click()">
-            <input type="file" id="testFile" accept=".csv,.txt" onchange="loadTestFile(this)">
-            <div class="uz-icon">📄</div>
-            <div class="uz-text">Файл таңдаңыз немесе қолмен қосыңыз</div>
-            <div class="uz-sub">CSV: сұрақ;A нұсқа;B нұсқа;C нұсқа;D нұсқа;дұрыс(0-3)</div>
-          </div>
-        </div>
-        <div style="margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;">
-          <div class="serif" style="font-size:16px;font-weight:700;">Сұрақтар (<span id="tqCount">0</span>)</div>
-          <button class="btn b-outline b-sm" onclick="addTestQuestion()">+ Сұрақ қосу</button>
-        </div>
-        <div id="tqList"></div>
-        <button class="btn b-plum" style="margin-top:8px;" onclick="publishTest()">✦ Тесті жариялау</button>
-      </div>`;
-    renderTQList();
-  } else {
-    document.getElementById('teacherTaskPanel').innerHTML='';
-    document.getElementById('teacherTestCreatePanel').innerHTML='';
-  }
-  renderTasksList();
+      </div>
+    </div>`;
+  }).join('');
+  setTimeout(init3DTilt, 50);
 }
 
-function loadTestFile(input){
-  var file=input.files[0];if(!file)return;
-  var reader=new FileReader();
-  reader.onload=function(e){
-    var lines=e.target.result.split('\n').filter(l=>l.trim());
-    var parsed=[];
-    lines.forEach(line=>{
-      var parts=line.split(';').map(p=>p.trim());
-      if(parts.length>=6){
-        var q=parts[0];var opts=[parts[1],parts[2],parts[3],parts[4]];var a=parseInt(parts[5])||0;
-        if(q&&opts.filter(Boolean).length>=2)parsed.push({q,opts,a});
-      }
-    });
-    if(parsed.length>0){buildingTestQuestions=[...parsed];renderTQList();notify('✓ '+parsed.length+' сұрақ жүктелді');}
-    else{notify('Файл форматы қате');}
+function openAddProjectModal() {
+  document.getElementById('submitModalContent').innerHTML = `
+    <div class="eyebrow">Жобалар</div>
+    <div class="m-title">Жаңа жоба қосу</div>
+    <div class="m-sub">Конструктормен жасаған өз жобаңызды қосыңыз</div>
+    <div class="form-group">
+      <label class="form-label">Жоба атауы</label>
+      <input class="form-input" id="newProjTitle" placeholder="Мысалы: Робот-шаңсорғыш">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Сипаттамасы</label>
+      <textarea class="form-ta" id="newProjDesc" placeholder="Жоба қалай жұмыс істейді? Мақсаты қандай?"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Қолданылатын бөлшектер / Датчиктер</label>
+      <input class="form-input" id="newProjComp" placeholder="Мысалы: Lego EV3, ультрадыбыстық датчик">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Бейне сілтемесі (YouTube, қосымша)</label>
+      <input class="form-input" id="newProjVideo" placeholder="https://youtube.com/watch?v=...">
+    </div>
+    <button class="btn b-terra" onclick="saveNewProject()">✓ Жобаны сақтау</button>
+  `;
+  openModal('submitModal');
+}
+
+function saveNewProject() {
+  var title = document.getElementById('newProjTitle').value.trim();
+  var desc = document.getElementById('newProjDesc').value.trim();
+  var comp = document.getElementById('newProjComp').value.trim();
+  var video = document.getElementById('newProjVideo').value.trim();
+  if(!title || !desc || !comp) {
+    notify('Барлық міндетті өрістерді толтырыңыз (Атауы, сипаттамасы, бөлшектер)');
+    return;
+  }
+  var newProj = {
+    id: 'custom_' + Date.now(),
+    title: title,
+    desc: desc,
+    components: comp,
+    videoUrl: video || null
   };
-  reader.readAsText(file,'UTF-8');
+  S.customProjects.push(newProj);
+  localStorage.setItem('custom_projects_' + (S.user ? S.user.id : 'anon'), JSON.stringify(S.customProjects));
+  closeModal('submitModal');
+  renderTasksSection();
+  renderHomeStats();
+  renderRecentTasks();
+  notify('✓ Жаңа жоба сәтті қосылды!');
 }
 
-function renderTQList(){
-  var el=document.getElementById('tqList');if(!el)return;
-  var cnt=document.getElementById('tqCount');if(cnt)cnt.textContent=buildingTestQuestions.length;
-  el.innerHTML=buildingTestQuestions.map((q,qi)=>`
-    <div style="background:var(--paper);border:1px solid var(--line2);border-radius:var(--r);padding:16px;margin-bottom:10px;">
-      <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;">
-        <span style="font-size:11px;font-weight:800;color:var(--muted2);letter-spacing:2px;min-width:20px;">${qi+1}</span>
-        <input class="form-input" style="flex:1;margin:0;" placeholder="Сұрақ мәтіні" value="${escHtml(q.q)}"
-          oninput="buildingTestQuestions[${qi}].q=this.value">
-        <button class="btn b-outline b-xs" onclick="removeQ(${qi})">✕</button>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
-        ${q.opts.map((o,oi)=>`
-          <div style="display:flex;align-items:center;gap:8px;">
-            <input type="radio" name="tq${qi}" ${q.a===oi?'checked':''} onchange="buildingTestQuestions[${qi}].a=${oi}"
-              style="width:15px;height:15px;accent-color:var(--terra);flex-shrink:0;">
-            <input class="form-input" style="margin:0;" placeholder="${'ABCD'[oi]} нұсқа" value="${escHtml(o)}"
-              oninput="buildingTestQuestions[${qi}].opts[${oi}]=this.value">
-          </div>`).join('')}
-      </div>
-    </div>`).join('');
-}
-function addTestQuestion(){buildingTestQuestions.push({q:'',opts:['','','',''],a:0});renderTQList();}
-function removeQ(idx){buildingTestQuestions.splice(idx,1);renderTQList();}
-
-async function addTask(){
-  var title=document.getElementById('taskTitle').value.trim();
-  var type=document.getElementById('taskType').value;
-  var desc=document.getElementById('taskDesc').value.trim();
-  var deadline=document.getElementById('taskDeadline').value;
-  var video=document.getElementById('taskVideo').value.trim();
-  if(!title||!desc){notify('Атауы мен сипаттаманы толтырыңыз');return;}
-  var {data,error}=await sb.from('tasks').insert({
-    title,type,description:desc,deadline:deadline||null,video_url:video||null,
-    teacher_id:S.user.id,teacher_name:S.profile.full_name,created_at:new Date().toISOString()
-  }).select().single();
-  if(error){notify('Қате: '+error.message);return;}
-  S.tasks.unshift(data);
-  ['taskTitle','taskDesc','taskDeadline','taskVideo'].forEach(id=>document.getElementById(id).value='');
-  renderTasksList();renderHomeStats();notify('✓ Тапсырма жарияланды');
-}
-
-async function publishTest(){
-  var title=document.getElementById('testTitle').value.trim();
-  var desc=document.getElementById('testDesc').value.trim();
-  var deadline=document.getElementById('testDeadline').value;
-  if(!title){notify('Тест атауын енгізіңіз');return;}
-  if(buildingTestQuestions.length<1){notify('Кемінде 1 сұрақ қосыңыз');return;}
-  var valid=buildingTestQuestions.filter(q=>q.q&&q.opts.filter(Boolean).length>=2);
-  if(valid.length<1){notify('Сұрақтарды толықтырыңыз');return;}
-  var {data,error}=await sb.from('teacher_tests').insert({
-    title,description:desc,deadline:deadline||null,questions:valid,
-    teacher_id:S.user.id,teacher_name:S.profile.full_name,created_at:new Date().toISOString()
-  }).select().single();
-  if(error){notify('Қате: '+error.message);return;}
-  S.teacherTests.unshift(data);
-  buildingTestQuestions=[];renderTQList();
-  ['testTitle','testDesc','testDeadline'].forEach(id=>document.getElementById(id).value='');
-  renderTasksList();renderHomeStats();notify('✦ Тест жарияланды!');
-}
-
-function renderTasksList(){
-  var el=document.getElementById('tasksList');
-  var isTeacher=S.role==='teacher';
-  var allItems=[
-    ...S.tasks.filter(t=>t.type!=='diag_test').map(t=>({...t,_kind:'task'})),
-    ...S.teacherTests.map(t=>({...t,type:'test',_kind:'test'}))
-  ].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
-  if(!allItems.length){
-    el.innerHTML=`<div class="card card-lg" style="text-align:center;padding:52px;">
-      <div style="font-size:36px;margin-bottom:14px;">📋</div>
-      <div class="serif" style="font-size:22px;font-weight:700;margin-bottom:8px;">Тапсырма жоқ</div>
-      <div style="font-size:14px;color:var(--muted);">${isTeacher?'Жоғарыдан тапсырма немесе тест жасаңыз':'Мұғалім тапсырма жарияламаған'}</div>
-    </div>`;return;
-  }
-  el.innerHTML=allItems.map(item=>{
-    var dl=item.deadline?`<span style="font-size:12px;color:var(--muted);font-weight:600;">📅 ${new Date(item.deadline).toLocaleDateString('kk-KZ')}</span>`:'';
-    var vidBtn=item.video_url?`<button class="btn b-outline b-sm" onclick="openVideo('${item.video_url}')">📹 Видео</button>`:'';
-    var actionBtn='';
-    if(item._kind==='test'&&!isTeacher)
-      actionBtn=`<button class="btn b-terra b-sm" onclick="startInlineTest(${item.id})">✦ Тесті бастау</button>`;
-    else if(!isTeacher)
-      actionBtn=`<button class="btn b-terra b-sm" onclick="submitWork('${item.id}','${item.title}')">✓ Тапсыру</button>`;
-    var delBtn=isTeacher?`<button class="btn b-outline b-sm" onclick="deleteItem('${item._kind}','${item.id}')" style="margin-left:auto;">🗑</button>`:'';
-    return `<div class="task-card">
-      <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:10px;">
-        <div style="flex:1;">
-          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px;">
-            <span class="task-type ${typeClass(item.type)}">${typeLabel(item.type)}</span>
-            ${dl}
-          </div>
-          <div class="task-title">${item.title}</div>
-        </div>
-      </div>
-      <div class="task-desc">${item.description||item.desc||''}</div>
-      ${item._kind==='test'?`<div style="font-size:13px;color:var(--muted);font-weight:600;margin-bottom:12px;">📝 ${(item.questions||[]).length} сұрақ</div>`:''}
-      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-        ${vidBtn}${actionBtn}${delBtn}
-      </div>
-      <div style="margin-top:10px;font-size:12px;color:var(--muted2);font-weight:500;">
-        👤 ${item.teacher_name||'Мұғалім'} · ${new Date(item.created_at).toLocaleDateString('kk-KZ')}
-      </div>
-    </div>`}).join('');
+function deleteCustomProject(id) {
+  S.customProjects = S.customProjects.filter(p => p.id !== id);
+  localStorage.setItem('custom_projects_' + (S.user ? S.user.id : 'anon'), JSON.stringify(S.customProjects));
+  renderTasksSection();
+  renderHomeStats();
+  renderRecentTasks();
+  notify('Жоба жойылды');
 }
 
 async function deleteItem(kind,id){
@@ -1690,7 +1597,8 @@ function showMTab(tab,btn){
     cycle:`<div class="card card-lg">
       <div class="c-title"><div class="c-icon ci-p">◇</div><span class="serif">AR <em style="font-style:italic;color:var(--plum)">циклдары</em></span></div>
       ${[['1-цикл','Танысу және диагностика','Бастапқы деңгейді анықтау, Робототехника конструкторларымен таныстыру','ci-t'],
-         ['2-цикл','Техникалық меңгеру','Датчиктерді қолдану, алғашқы жобалар жасау...','ci-a']].map(c=>
+         ['2-цикл','Техникалық меңгеру','Датчиктерді қолдану, алғашқы жобалар жасау...','ci-a'],
+         ['3-цикл','Дербес жобалау','Оқушылардың дағдыларын тексеру, қорытынды жасау','ci-tl']].map(c=>
         `<div style="display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--line2);">
           <div class="c-icon ${c[3]}" style="width:46px;height:46px;flex-shrink:0;font-weight:800;font-size:13px;">${c[0].split('-')[0]}</div>
           <div>
@@ -1702,10 +1610,10 @@ function showMTab(tab,btn){
     tools:`<div class="card card-lg">
       <div class="c-title"><div class="c-icon ci-tl">◇</div><span class="serif">Оқу <em style="font-style:italic;color:var(--teal)">құралдары</em></span></div>
       <div class="g2">
-        ${[['Arduino','Нақты робот платасы. Схема жасау, датчиктер, моторларды басқару.','ci-t','⚙'],
-           ['Tinkercad','Онлайн Arduino симуляциясы мен 3D дизайн — браузерде.','ci-a','🖥'],
-           ['Scratch / Blockly','Блок-схема арқылы визуалды бағдарламалау. Бастаушыларға.','ci-o','🧩'],
-           ['Google Classroom','Тапсырмалар, тест, материалдарды бір платформада жинау.','ci-p','📚']].map(t=>
+        ${[['Lego EV3 Mindstorms','Нақты робот жинағы. Моторлар, датчиктер және басқару блогы арқылы құрастыру.','ci-t','🤖'],
+           ['Microsoft MakeCode','Роботтар мен микросхемаларды бағдарламалауға арналған визуалды онлайн конструктор.','ci-a','🖥'],
+           ['Рефлексивтік күнделік','Оқушының өз жұмысын, жетістіктері мен қателерін жазып отыратын күнделігі.','ci-o','📓'],
+           ['Тапсырмалар','Оқу барысындағы практикалық және шығармашылық жұмыстар жинағы.','ci-p','📚']].map(t=>
           `<div class="card" style="background:var(--cream);border-radius:var(--r);padding:22px;margin-bottom:0;">
             <div class="c-icon ${t[2]}" style="width:40px;height:40px;margin-bottom:14px;font-size:18px;">${t[3]}</div>
             <div style="font-weight:800;font-size:15.5px;margin-bottom:6px;">${t[0]}</div>
