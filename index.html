@@ -6,7 +6,7 @@
 <title>Роботтық академия</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,300;1,9..144,400;1,9..144,500;1,9..144,600;1,9..144,700;1,9..144,800&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,300;1,9..144,400;1,9..144,500;1,9..144,600;1,9..144,700;1,9..144,800&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{
@@ -28,25 +28,25 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;}
 html{scroll-behavior:smooth;}
-body{font-family:'Inter',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;overflow-x:hidden;line-height:1.6;font-size:15px;}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;overflow-x:hidden;line-height:1.6;font-size:15px;}
 body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
   background:radial-gradient(ellipse 80% 60% at 10% 0%,rgba(194,67,30,.05),transparent),
     radial-gradient(ellipse 60% 80% at 90% 100%,rgba(90,60,114,.04),transparent);}
-button,input,textarea,select{font-family:'Inter',sans-serif;font-size:inherit;}
+button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;font-size:inherit;}
 ::-webkit-scrollbar{width:6px;height:6px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px;}
 
 /* ── TYPOGRAPHY ── */
-.serif{font-family:'Fraunces',serif;font-variation-settings:'opsz' 72;}
-.serif-lg{font-family:'Fraunces',serif;font-variation-settings:'opsz' 144;}
+.serif{font-family:'Space Grotesk',sans-serif;font-weight:700;}
+.serif-lg{font-family:'Space Grotesk',sans-serif;font-weight:700;}
 em{font-style:italic;}
 .eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:10.5px;font-weight:700;
   letter-spacing:2.8px;color:var(--terra);text-transform:uppercase;margin-bottom:12px;}
 .eyebrow::before{content:'✦';font-size:11px;}
-.pg-title{font-family:'Fraunces',serif;font-variation-settings:'opsz' 144;
-  font-size:56px;font-weight:600;letter-spacing:-2.5px;line-height:1.02;margin-bottom:10px;}
-.pg-title em{color:var(--terra);font-weight:500;}
+.pg-title{font-family:'Space Grotesk',sans-serif;
+  font-size:56px;font-weight:700;letter-spacing:-1.5px;line-height:1.02;margin-bottom:10px;}
+.pg-title em{color:var(--terra);font-style:italic;}
 .pg-sub{font-size:15px;color:var(--muted);line-height:1.75;margin-bottom:32px;max-width:560px;}
 
 /* ── AUTH ── */
@@ -153,8 +153,11 @@ em{font-style:italic;}
 .sb-lbl{font-size:9.5px;font-weight:800;letter-spacing:3px;color:var(--muted2);
   text-transform:uppercase;padding:0 12px;margin-bottom:6px;}
 .sb-item{display:flex;align-items:center;gap:11px;padding:10px 14px;border-radius:var(--rs);
-  cursor:pointer;transition:var(--tr);font-size:13.5px;font-weight:600;color:var(--muted);}
-.sb-item:hover{background:var(--cream2);color:var(--ink);}
+  cursor:pointer;transition:all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);font-size:13.5px;font-weight:600;color:var(--muted);
+  position:relative;overflow:hidden;}
+.sb-item::after{content:'';position:absolute;bottom:0;left:0;width:4px;height:0;background:var(--terra);transition:height 0.3s ease;}
+.sb-item:hover::after, .sb-item.on::after{height:100%;}
+.sb-item:hover{background:var(--cream2);color:var(--ink);transform:translateX(5px);box-shadow:inset 3px 0 0 var(--terra);}
 .sb-item.on{background:var(--ink);color:var(--paper);}
 .sb-icon{font-size:14px;width:18px;text-align:center;flex-shrink:0;}
 .sb-badge{margin-left:auto;background:var(--terra);color:var(--paper);
@@ -170,16 +173,22 @@ em{font-style:italic;}
   min-height:calc(100vh - 58px);transition:margin var(--tr);}
 .main-wrap.full{margin-left:0;}
 .section{display:none;}
-.section.on{display:block;}
+@keyframes sectionFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.section.on{display:block;animation:sectionFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;}
 
 /* ── CARDS ── */
 .card{background:var(--paper);border:1px solid var(--line2);border-radius:var(--rl);padding:28px;
-  margin-bottom:18px;box-shadow:var(--sh);}
+  margin-bottom:18px;box-shadow:var(--sh);transition:transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s;}
+.card:hover{transform:translateY(-4px);box-shadow:0 16px 36px rgba(194, 67, 30, 0.06), 0 2px 8px rgba(24, 22, 31, 0.04);border-color:rgba(194, 67, 30, 0.3);}
 .card-lg{padding:36px;}
-.c-title{font-family:'Fraunces',serif;font-size:20px;font-weight:700;letter-spacing:-.5px;
+.c-title{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;letter-spacing:-.5px;
   margin-bottom:18px;display:flex;align-items:center;gap:12px;}
 .c-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;
-  justify-content:center;font-size:15px;flex-shrink:0;}
+  justify-content:center;font-size:15px;flex-shrink:0;transition:transform 0.3s;}
+.card:hover .c-icon{transform:scale(1.1) rotate(5deg);}
 .ci-t{background:var(--terraL);color:var(--terra);}
 .ci-a{background:var(--amberL);color:var(--amber);}
 .ci-o{background:var(--oliveL);color:var(--olive);}
@@ -194,17 +203,20 @@ em{font-style:italic;}
 /* STATS */
 .stats-row{display:flex;gap:14px;margin-bottom:32px;flex-wrap:wrap;}
 .st-card{flex:1;min-width:140px;background:var(--paper);border:1px solid var(--line2);
-  border-radius:var(--rl);padding:22px 20px;box-shadow:var(--sh);}
-.st-num{font-family:'Fraunces',serif;font-size:40px;font-weight:600;letter-spacing:-2px;
+  border-radius:var(--rl);padding:22px 20px;box-shadow:var(--sh);transition:transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s;}
+.st-card:hover{transform:translateY(-4px);box-shadow:0 16px 36px rgba(194, 67, 30, 0.06);border-color:rgba(194, 67, 30, 0.3);}
+.st-num{font-family:'Space Grotesk',sans-serif;font-size:40px;font-weight:700;letter-spacing:-1.5px;
   line-height:1;margin-bottom:6px;}
 .st-label{font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:3px;}
 .st-sub{font-size:11.5px;color:var(--muted);}
 
 /* BUTTONS */
 .btn{padding:11px 22px;border:none;border-radius:100px;font-size:13px;font-weight:700;
-  cursor:pointer;transition:var(--tr);letter-spacing:.3px;display:inline-flex;
-  align-items:center;gap:8px;line-height:1;}
-.btn:hover{transform:translateY(-1px);}
+  cursor:pointer;transition:all 0.3s cubic-bezier(0.16, 1, 0.3, 1);letter-spacing:.3px;display:inline-flex;
+  align-items:center;gap:8px;line-height:1;position:relative;overflow:hidden;z-index:1;}
+.btn::before{content:'';position:absolute;inset:0;background:rgba(255,255,255,0.15);transform:scaleX(0);transform-origin:right;transition:transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);z-index:-1;}
+.btn:hover::before{transform:scaleX(1);transform-origin:left;}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(194, 67, 30, 0.2);}
 .btn:active{transform:translateY(0);}
 .b-terra{background:var(--terra);color:var(--paper);}
 .b-terra:hover{background:var(--terra2);}
@@ -287,13 +299,13 @@ em{font-style:italic;}
 .test-prog{height:4px;background:var(--line2);border-radius:2px;margin-bottom:32px;}
 .test-prog-fill{height:100%;background:var(--terra);border-radius:2px;transition:width .4s;}
 .test-q-num{font-size:10.5px;font-weight:800;letter-spacing:2.8px;color:var(--muted2);text-transform:uppercase;}
-.test-q{font-family:'Fraunces',serif;font-size:27px;font-weight:600;letter-spacing:-.6px;
+.test-q{font-family:'Space Grotesk',sans-serif;font-size:27px;font-weight:700;letter-spacing:-.6px;
   margin:12px 0 28px;line-height:1.35;}
 .test-opts{display:flex;flex-direction:column;gap:11px;margin-bottom:32px;}
 .test-opt{padding:16px 20px;border:1.5px solid var(--line2);border-radius:12px;
-  cursor:pointer;transition:var(--tr);font-size:15px;font-weight:500;
+  cursor:pointer;transition:all 0.25s cubic-bezier(0.16, 1, 0.3, 1);font-size:15px;font-weight:500;
   display:flex;align-items:center;gap:14px;}
-.test-opt:hover{border-color:var(--terra);background:var(--terraL);}
+.test-opt:hover{border-color:var(--terra);background:var(--terraL);transform:translateX(6px);}
 .test-opt.sel{border-color:var(--terra);background:var(--terraL);color:var(--terra);font-weight:600;}
 .test-opt.correct{border-color:var(--olive);background:var(--oliveL);color:var(--olive);}
 .test-opt.wrong{border-color:#D9534F;background:#FEF0EF;color:#D9534F;}
@@ -302,17 +314,17 @@ em{font-style:italic;}
 .test-nav{display:flex;justify-content:space-between;align-items:center;}
 .test-result{background:var(--paper);border:1px solid var(--line2);border-radius:var(--rl);
   padding:60px 44px;text-align:center;max-width:600px;margin:0 auto;box-shadow:var(--sh-md);}
-.result-score{font-family:'Fraunces',serif;font-size:88px;font-weight:600;
+.result-score{font-family:'Space Grotesk',sans-serif;font-size:88px;font-weight:700;
   color:var(--terra);letter-spacing:-4px;line-height:1;margin:16px 0;}
 
 /* LESSON CARDS */
 .lesson-card{background:var(--paper);border:1px solid var(--line2);border-radius:var(--rl);
-  padding:24px;box-shadow:var(--sh);cursor:pointer;transition:var(--tr);}
-.lesson-card:hover{transform:translateY(-3px);box-shadow:var(--sh-lg);}
+  padding:24px;box-shadow:var(--sh);cursor:pointer;transition:all 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s;}
+.lesson-card:hover{transform:translateY(-5px);box-shadow:0 16px 36px rgba(194, 67, 30, 0.06);border-color:rgba(194, 67, 30, 0.3);}
 .lc-date{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
 .lc-date-badge{padding:5px 12px;border-radius:100px;font-size:10.5px;font-weight:700;
   background:var(--terraL);color:var(--terra);}
-.lc-title{font-family:'Fraunces',serif;font-size:19px;font-weight:700;letter-spacing:-.4px;
+.lc-title{font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:700;letter-spacing:-.4px;
   margin-bottom:9px;line-height:1.25;}
 .lc-desc{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:14px;}
 .lc-footer{display:flex;align-items:center;justify-content:space-between;}
@@ -320,9 +332,9 @@ em{font-style:italic;}
 
 /* TASK CARDS */
 .task-card{background:var(--paper);border:1px solid var(--line2);border-radius:var(--rl);
-  padding:24px;margin-bottom:14px;box-shadow:var(--sh);transition:var(--tr);}
-.task-card:hover{box-shadow:var(--sh-md);}
-.task-title{font-family:'Fraunces',serif;font-size:20px;font-weight:700;letter-spacing:-.5px;margin-bottom:8px;}
+  padding:24px;margin-bottom:14px;box-shadow:var(--sh);transition:all 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s;}
+.task-card:hover{transform:translateY(-4px);box-shadow:0 16px 36px rgba(194, 67, 30, 0.06);border-color:rgba(194, 67, 30, 0.3);}
+.task-title{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;letter-spacing:-.5px;margin-bottom:8px;}
 .task-desc{font-size:14px;color:var(--muted2);line-height:1.7;margin-bottom:16px;}
 .task-type{display:inline-flex;align-items:center;gap:6px;padding:5px 13px;border-radius:100px;
   font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;}
@@ -1061,6 +1073,7 @@ function renderDiagResult(){
         <button class="btn b-terra" onclick="go('lessons')">Сабақтарға өту →</button>
       </div>
     </div>`;
+  if (pct >= 50) triggerConfetti();
 }
 
 // ============================================================
@@ -1439,6 +1452,7 @@ function renderInlineTest(){
         ${pct>=70?'Жарайсыз! Жақсы нәтиже.':'Жаттығу қажет. Материалды қайта оқыңыз.'}</div>
       <button class="btn b-terra" onclick="closeModal('inlineTestModal')">Жабу</button>
     </div>`;
+    if (pct >= 60) triggerConfetti();
     saveInlineResult(test.id,correct,qs.length,pct);return;
   }
   var curr=qs[q];var letters=['A','B','C','D','E'];
@@ -1731,6 +1745,157 @@ window.addEventListener('load',async()=>{
   var {data:{session}}=await sb.auth.getSession();
   if(!session)showAuthPage();
 });
+
+// ============================================================
+// ANIMATIONS & BACKGROUND
+// ============================================================
+function triggerConfetti() {
+  var canvas = document.createElement('canvas');
+  canvas.style.position = 'fixed';
+  canvas.style.top = '0';
+  canvas.style.left = '0';
+  canvas.style.width = '100vw';
+  canvas.style.height = '100vh';
+  canvas.style.pointerEvents = 'none';
+  canvas.style.zIndex = '99999';
+  document.body.appendChild(canvas);
+  
+  var ctx = canvas.getContext('2d');
+  var colors = ['#C2431E', '#E06840', '#C97A18', '#266E6A', '#5A3C72'];
+  var particles = [];
+  
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  
+  for (var i = 0; i < 120; i++) {
+    particles.push({
+      x: canvas.width / 2,
+      y: canvas.height + 20,
+      vx: (Math.random() - 0.5) * 16,
+      vy: -Math.random() * 16 - 8,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      size: Math.random() * 6 + 3,
+      rotation: Math.random() * 360,
+      rotationSpeed: (Math.random() - 0.5) * 8
+    });
+  }
+  
+  var start = Date.now();
+  function update() {
+    if (Date.now() - start > 3500) {
+      window.removeEventListener('resize', resize);
+      canvas.remove();
+      return;
+    }
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.35; // gravity
+      p.vx *= 0.98;
+      p.rotation += p.rotationSpeed;
+      
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rotation * Math.PI / 180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size/2, -p.size/2, p.size, p.size);
+      ctx.restore();
+    });
+    requestAnimationFrame(update);
+  }
+  update();
+}
+
+// Background Tech Grid/Circuit Animation
+(function() {
+  var canvas = document.createElement('canvas');
+  canvas.style.position = 'fixed';
+  canvas.style.top = '0';
+  canvas.style.left = '0';
+  canvas.style.width = '100vw';
+  canvas.style.height = '100vh';
+  canvas.style.pointerEvents = 'none';
+  canvas.style.zIndex = '-1';
+  canvas.style.opacity = '0.22';
+  document.body.appendChild(canvas);
+  
+  var ctx = canvas.getContext('2d');
+  var dots = [];
+  var numDots = 30;
+  
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+  
+  for (var i = 0; i < numDots; i++) {
+    dots.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.35,
+      vy: (Math.random() - 0.5) * 0.35,
+      r: Math.random() * 2 + 1
+    });
+  }
+  
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw Grid Lines (Robotics vibe)
+    ctx.strokeStyle = 'rgba(194, 67, 30, 0.015)';
+    ctx.lineWidth = 1;
+    var gridSize = 65;
+    for (var x = 0; x < canvas.width; x += gridSize) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, canvas.height);
+      ctx.stroke();
+    }
+    for (var y = 0; y < canvas.height; y += gridSize) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(canvas.width, y);
+      ctx.stroke();
+    }
+    
+    // Connect Dots with Lines (Circuits vibe)
+    ctx.fillStyle = 'rgba(194, 67, 30, 0.12)';
+    ctx.strokeStyle = 'rgba(194, 67, 30, 0.04)';
+    for (var i = 0; i < numDots; i++) {
+      var d = dots[i];
+      d.x += d.vx;
+      d.y += d.vy;
+      
+      if (d.x < 0 || d.x > canvas.width) d.vx *= -1;
+      if (d.y < 0 || d.y > canvas.height) d.vy *= -1;
+      
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+      ctx.fill();
+      
+      for (var j = i + 1; j < numDots; j++) {
+        var d2 = dots[j];
+        var dist = Math.hypot(d.x - d2.x, d.y - d2.y);
+        if (dist < 155) {
+          ctx.beginPath();
+          ctx.moveTo(d.x, d.y);
+          ctx.lineTo(d2.x, d2.y);
+          ctx.lineWidth = (1 - dist / 155) * 0.7;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
 </script>
 </body>
 </html>
