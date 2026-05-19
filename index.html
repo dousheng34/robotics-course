@@ -6,7 +6,7 @@
 <title>Роботтық академия</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,300;1,9..144,400;1,9..144,500;1,9..144,600;1,9..144,700;1,9..144,800&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{
@@ -38,15 +38,15 @@ button,input,textarea,select{font-family:'Plus Jakarta Sans',sans-serif;font-siz
 ::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px;}
 
 /* ── TYPOGRAPHY ── */
-.serif{font-family:'Space Grotesk',sans-serif;font-weight:700;}
-.serif-lg{font-family:'Space Grotesk',sans-serif;font-weight:700;}
+.serif{font-family:'Montserrat',sans-serif;font-weight:700;}
+.serif-lg{font-family:'Montserrat',sans-serif;font-weight:800;letter-spacing:-1px;}
 em{font-style:italic;}
-.eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:10.5px;font-weight:700;
-  letter-spacing:2.8px;color:var(--terra);text-transform:uppercase;margin-bottom:12px;}
+.eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:10.5px;font-weight:800;
+  letter-spacing:2.8px;color:var(--terra);text-transform:uppercase;margin-bottom:12px;font-family:'Montserrat',sans-serif;}
 .eyebrow::before{content:'✦';font-size:11px;}
-.pg-title{font-family:'Space Grotesk',sans-serif;
-  font-size:56px;font-weight:700;letter-spacing:-1.5px;line-height:1.02;margin-bottom:10px;}
-.pg-title em{color:var(--terra);font-style:italic;}
+.pg-title{font-family:'Montserrat',sans-serif;
+  font-size:54px;font-weight:800;letter-spacing:-1.5px;line-height:1.05;margin-bottom:10px;}
+.pg-title em{background:linear-gradient(135deg,var(--terra) 0%,var(--amber) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-style:normal;font-weight:900;}
 .pg-sub{font-size:15px;color:var(--muted);line-height:1.75;margin-bottom:32px;max-width:560px;}
 
 /* ── AUTH ── */
@@ -64,22 +64,22 @@ em{font-style:italic;}
 .a-brand{position:relative;z-index:1;display:flex;align-items:center;gap:14px;margin-bottom:52px;}
 .a-mark{width:46px;height:46px;border-radius:12px;background:var(--terra);
   display:flex;align-items:center;justify-content:center;
-  font-family:'Fraunces',serif;font-style:italic;font-size:22px;font-weight:700;color:var(--paper);}
-.a-brand-name{font-family:'Fraunces',serif;font-size:26px;font-weight:700;letter-spacing:-.5px;}
+  font-family:'Montserrat',sans-serif;font-weight:800;color:var(--paper);}
+.a-brand-name{font-family:'Montserrat',sans-serif;font-size:26px;font-weight:800;letter-spacing:-.5px;}
 .a-brand-sub{font-size:9.5px;font-weight:700;letter-spacing:3px;color:rgba(253,250,244,.45);text-transform:uppercase;margin-top:3px;}
 .a-tagline{position:relative;z-index:1;
-  font-family:'Fraunces',serif;font-variation-settings:'opsz' 144;
-  font-size:76px;font-weight:600;line-height:.95;letter-spacing:-3.5px;margin-bottom:22px;color:var(--paper);}
-.a-tagline em{color:var(--terra2);font-weight:400;}
+  font-family:'Montserrat',sans-serif;
+  font-size:76px;font-weight:800;line-height:.95;letter-spacing:-3.5px;margin-bottom:22px;color:var(--paper);}
+.a-tagline em{color:var(--terra2);font-weight:600;font-style:normal;}
 .a-desc{position:relative;z-index:1;font-size:15px;color:rgba(253,250,244,.55);line-height:1.8;max-width:420px;}
 .a-stats{position:relative;z-index:1;display:flex;gap:44px;margin-top:40px;padding-top:28px;border-top:1px solid rgba(253,250,244,.1);}
-.a-stat .n{font-family:'Fraunces',serif;font-size:42px;font-weight:600;color:var(--paper);letter-spacing:-2px;line-height:1;}
+.a-stat .n{font-family:'Montserrat',sans-serif;font-size:42px;font-weight:800;color:var(--paper);letter-spacing:-2px;line-height:1;}
 .a-stat .l{font-size:9.5px;font-weight:700;letter-spacing:2.2px;color:rgba(253,250,244,.45);text-transform:uppercase;margin-top:5px;}
 .auth-right{width:480px;background:var(--paper);display:flex;align-items:center;justify-content:center;padding:40px;}
 .a-box{width:100%;max-width:370px;}
-.a-title{font-family:'Fraunces',serif;font-variation-settings:'opsz' 144;
-  font-size:46px;font-weight:600;letter-spacing:-2px;line-height:1.02;margin-bottom:6px;}
-.a-title em{color:var(--terra);}
+.a-title{font-family:'Montserrat',sans-serif;
+  font-size:46px;font-weight:800;letter-spacing:-2px;line-height:1.02;margin-bottom:6px;}
+.a-title em{color:var(--terra);font-style:normal;}
 .a-subtitle{font-size:14px;color:var(--muted);margin-bottom:26px;line-height:1.7;}
 .auth-tabs{display:flex;background:var(--cream);border:1.5px solid var(--line);border-radius:100px;padding:4px;gap:0;margin-bottom:22px;}
 .a-tab{flex:1;padding:9px 14px;border:none;border-radius:100px;font-size:13px;font-weight:600;
@@ -116,7 +116,7 @@ em{font-style:italic;}
 .loader{width:38px;height:38px;border:3px solid var(--line2);border-top-color:var(--terra);
   border-radius:50%;animation:spin .75s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
-.loader-text{font-family:'Fraunces',serif;font-size:22px;font-weight:600;letter-spacing:-.5px;color:var(--ink);}
+.loader-text{font-family:'Montserrat',sans-serif;font-size:22px;font-weight:700;letter-spacing:-.5px;color:var(--ink);}
 
 /* ── APP SHELL ── */
 #app{display:none;min-height:100vh;}
@@ -133,8 +133,8 @@ em{font-style:italic;}
 .tb-brand{display:flex;align-items:center;gap:10px;}
 .tb-mark{width:30px;height:30px;border-radius:8px;background:var(--terra);
   display:flex;align-items:center;justify-content:center;
-  font-family:'Fraunces',serif;font-style:italic;font-size:14px;font-weight:700;color:var(--paper);}
-.tb-name{font-family:'Fraunces',serif;font-size:18px;font-weight:700;letter-spacing:-.4px;color:var(--ink);}
+  font-family:'Montserrat',sans-serif;font-weight:800;color:var(--paper);}
+.tb-name{font-family:'Montserrat',sans-serif;font-size:18px;font-weight:800;letter-spacing:-.4px;color:var(--ink);}
 .tb-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
 .tb-av{width:34px;height:34px;border-radius:50%;background:var(--terra);
   display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--paper);}
@@ -184,7 +184,7 @@ em{font-style:italic;}
   margin-bottom:18px;box-shadow:var(--sh);transition:transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s;}
 .card:hover{transform:translateY(-4px);box-shadow:0 16px 36px rgba(194, 67, 30, 0.06), 0 2px 8px rgba(24, 22, 31, 0.04);border-color:rgba(194, 67, 30, 0.3);}
 .card-lg{padding:36px;}
-.c-title{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;letter-spacing:-.5px;
+.c-title{font-family:'Montserrat',sans-serif;font-size:20px;font-weight:800;letter-spacing:-.5px;
   margin-bottom:18px;display:flex;align-items:center;gap:12px;}
 .c-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;
   justify-content:center;font-size:15px;flex-shrink:0;transition:transform 0.3s;}
@@ -205,7 +205,7 @@ em{font-style:italic;}
 .st-card{flex:1;min-width:140px;background:var(--paper);border:1px solid var(--line2);
   border-radius:var(--rl);padding:22px 20px;box-shadow:var(--sh);transition:transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s;}
 .st-card:hover{transform:translateY(-4px);box-shadow:0 16px 36px rgba(194, 67, 30, 0.06);border-color:rgba(194, 67, 30, 0.3);}
-.st-num{font-family:'Space Grotesk',sans-serif;font-size:40px;font-weight:700;letter-spacing:-1.5px;
+.st-num{font-family:'Montserrat',sans-serif;font-size:40px;font-weight:800;letter-spacing:-1.5px;
   line-height:1;margin-bottom:6px;}
 .st-label{font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:3px;}
 .st-sub{font-size:11.5px;color:var(--muted);}
@@ -267,7 +267,7 @@ em{font-style:italic;}
 /* ── TEACHER PANEL ── */
 .t-panel{background:var(--cream);border:1.5px dashed var(--line);border-radius:var(--rl);
   padding:26px;margin-bottom:26px;}
-.t-panel-title{font-family:'Fraunces',serif;font-size:19px;font-weight:700;
+.t-panel-title{font-family:'Montserrat',sans-serif;font-size:19px;font-weight:800;
   letter-spacing:-.4px;margin-bottom:8px;display:flex;align-items:center;gap:9px;}
 .t-panel-title::before{content:'✦';color:var(--terra);font-size:13px;}
 .t-panel-sub{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6;}
@@ -280,13 +280,13 @@ em{font-style:italic;}
   padding:60px 44px;text-align:center;margin-bottom:26px;box-shadow:var(--sh-md);}
 .test-hero-icon{font-size:44px;color:var(--terra);margin-bottom:20px;
   display:flex;align-items:center;justify-content:center;}
-.test-hero-title{font-family:'Fraunces',serif;font-variation-settings:'opsz' 144;
-  font-size:44px;font-weight:600;letter-spacing:-2px;margin-bottom:12px;line-height:1.05;}
-.test-hero-title em{color:var(--terra);}
+.test-hero-title{font-family:'Montserrat',sans-serif;
+  font-size:44px;font-weight:800;letter-spacing:-2px;margin-bottom:12px;line-height:1.05;}
+.test-hero-title em{color:var(--terra);font-style:normal;}
 .test-hero-sub{font-size:15px;color:var(--muted);max-width:440px;margin:0 auto 28px;line-height:1.75;}
 .test-meta{display:flex;justify-content:center;gap:48px;margin-bottom:36px;
   padding-top:24px;border-top:1px solid var(--line2);}
-.tm-item .n{font-family:'Fraunces',serif;font-size:36px;font-weight:600;
+.tm-item .n{font-family:'Montserrat',sans-serif;font-size:36px;font-weight:800;
   color:var(--terra);letter-spacing:-1.5px;line-height:1;}
 .tm-item .l{font-size:9.5px;font-weight:700;letter-spacing:2.5px;color:var(--muted);
   text-transform:uppercase;margin-top:5px;}
@@ -299,7 +299,7 @@ em{font-style:italic;}
 .test-prog{height:4px;background:var(--line2);border-radius:2px;margin-bottom:32px;}
 .test-prog-fill{height:100%;background:var(--terra);border-radius:2px;transition:width .4s;}
 .test-q-num{font-size:10.5px;font-weight:800;letter-spacing:2.8px;color:var(--muted2);text-transform:uppercase;}
-.test-q{font-family:'Space Grotesk',sans-serif;font-size:27px;font-weight:700;letter-spacing:-.6px;
+.test-q{font-family:'Montserrat',sans-serif;font-size:27px;font-weight:800;letter-spacing:-.6px;
   margin:12px 0 28px;line-height:1.35;}
 .test-opts{display:flex;flex-direction:column;gap:11px;margin-bottom:32px;}
 .test-opt{padding:16px 20px;border:1.5px solid var(--line2);border-radius:12px;
@@ -314,7 +314,7 @@ em{font-style:italic;}
 .test-nav{display:flex;justify-content:space-between;align-items:center;}
 .test-result{background:var(--paper);border:1px solid var(--line2);border-radius:var(--rl);
   padding:60px 44px;text-align:center;max-width:600px;margin:0 auto;box-shadow:var(--sh-md);}
-.result-score{font-family:'Space Grotesk',sans-serif;font-size:88px;font-weight:700;
+.result-score{font-family:'Montserrat',sans-serif;font-size:88px;font-weight:800;
   color:var(--terra);letter-spacing:-4px;line-height:1;margin:16px 0;}
 
 /* LESSON CARDS */
@@ -324,7 +324,7 @@ em{font-style:italic;}
 .lc-date{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
 .lc-date-badge{padding:5px 12px;border-radius:100px;font-size:10.5px;font-weight:700;
   background:var(--terraL);color:var(--terra);}
-.lc-title{font-family:'Space Grotesk',sans-serif;font-size:19px;font-weight:700;letter-spacing:-.4px;
+.lc-title{font-family:'Montserrat',sans-serif;font-size:19px;font-weight:800;letter-spacing:-.4px;
   margin-bottom:9px;line-height:1.25;}
 .lc-desc{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:14px;}
 .lc-footer{display:flex;align-items:center;justify-content:space-between;}
@@ -334,7 +334,7 @@ em{font-style:italic;}
 .task-card{background:var(--paper);border:1px solid var(--line2);border-radius:var(--rl);
   padding:24px;margin-bottom:14px;box-shadow:var(--sh);transition:all 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s;}
 .task-card:hover{transform:translateY(-4px);box-shadow:0 16px 36px rgba(194, 67, 30, 0.06);border-color:rgba(194, 67, 30, 0.3);}
-.task-title{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;letter-spacing:-.5px;margin-bottom:8px;}
+.task-title{font-family:'Montserrat',sans-serif;font-size:20px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px;}
 .task-desc{font-size:14px;color:var(--muted2);line-height:1.7;margin-bottom:16px;}
 .task-type{display:inline-flex;align-items:center;gap:6px;padding:5px 13px;border-radius:100px;
   font-size:10px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;}
@@ -378,7 +378,7 @@ em{font-style:italic;}
   background:var(--cream2);border:none;cursor:pointer;font-size:16px;
   display:flex;align-items:center;justify-content:center;transition:var(--tr);font-weight:700;}
 .m-close:hover{background:var(--line);}
-.m-title{font-family:'Fraunces',serif;font-size:28px;font-weight:700;letter-spacing:-.8px;margin-bottom:6px;}
+.m-title{font-family:'Montserrat',sans-serif;font-size:28px;font-weight:800;letter-spacing:-.8px;margin-bottom:6px;}
 .m-sub{font-size:13.5px;color:var(--muted);margin-bottom:24px;line-height:1.65;}
 
 /* PROG BAR */
@@ -409,7 +409,7 @@ em{font-style:italic;}
 
 /* DOC PREVIEW */
 .doc-preview{background:var(--ink);border-radius:var(--rl);padding:28px;color:var(--paper);
-  font-family:'Inter',sans-serif;font-size:13.5px;line-height:1.8;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:13.5px;line-height:1.8;
   max-height:360px;overflow-y:auto;white-space:pre-wrap;margin-top:14px;}
 
 @media(max-width:960px){
@@ -809,6 +809,7 @@ function go(sec){
   if(sec==='progress')renderProgress();
   if(sec==='method'){renderMethod();showMTab('ar',document.querySelector('.m-tab'));}
   if(sec==='feedback')renderFeedback();
+  setTimeout(init3DTilt, 50);
 }
 function toggleSidebar(){
   document.getElementById('sidebar').classList.toggle('closed');
@@ -1549,16 +1550,73 @@ function renderGrades(){
         </table>
       </div></div>`;
   } else {
-    el.innerHTML=`<div class="card"><div class="c-title"><div class="c-icon ci-t">▤</div><span class="serif">Менің <em style="font-style:italic;color:var(--terra)">бағаларым</em></span></div>
-      ${localLessons.map(l=>`
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--line2);">
-          <div>
-            <div style="font-size:14.5px;font-weight:700;margin-bottom:3px;">${l.title}</div>
-            <div style="font-size:12px;color:var(--muted);">📅 ${l.date}</div>
-          </div>
-          <div class="g-cell g${grades[S.user.id+'_'+l.id]||'—'}" style="cursor:default;">${grades[S.user.id+'_'+l.id]||'—'}</div>
-        </div>`).join('')}
+    var total=0, cnt=0;
+    localLessons.forEach(l => {
+      var g = grades[S.user.id+'_'+l.id];
+      if (g) { total += g; cnt++; }
+    });
+    var gpa = cnt ? (total / cnt).toFixed(2) : '—';
+    var completion = cnt ? Math.round((cnt / localLessons.length) * 100) : 0;
+    var gpaClass = gpa >= 4.5 ? 'g5' : gpa >= 3.8 ? 'g4' : gpa >= 3.0 ? 'g3' : 'g2';
+    
+    var html = `<div style="display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap;">
+      <div class="card st-card card-3d" style="flex:1;min-width:200px;margin-bottom:0;">
+        <div style="font-size:24px;margin-bottom:8px;">📊</div>
+        <div class="st-num ${gpaClass}" style="width:fit-content;padding:2px 10px;border-radius:8px;font-size:32px;">${gpa}</div>
+        <div class="st-label" style="margin-top:8px;">Орташа баға (GPA)</div>
+        <div class="st-sub">Ағымдағы тоқсандағы үлгерім</div>
+      </div>
+      <div class="card st-card card-3d" style="flex:1;min-width:200px;margin-bottom:0;">
+        <div style="font-size:24px;margin-bottom:8px;">✅</div>
+        <div class="st-num" style="color:var(--teal);">${completion}%</div>
+        <div class="st-label" style="margin-top:8px;">Тапсырмалар орындалуы</div>
+        <div class="st-sub">${cnt} / ${localLessons.length} сабақ бағаланды</div>
+      </div>
+      <div class="card st-card card-3d" style="flex:1;min-width:200px;margin-bottom:0;">
+        <div style="font-size:24px;margin-bottom:8px;">🏆</div>
+        <div class="st-num" style="color:var(--amber);">${gpa >= 4.5 ? 'Үздік' : gpa >= 3.8 ? 'Екпінді' : 'Талпынушы'}</div>
+        <div class="st-label" style="margin-top:8px;">Оқушы мәртебесі</div>
+        <div class="st-sub">Академиялық рейтинг дәрежесі</div>
+      </div>
     </div>`;
+
+    html += `<div class="card card-3d"><div class="c-title"><div class="c-icon ci-t">📖</div><span class="serif">Электронды күнделік <em style="font-style:normal;background:linear-gradient(135deg,var(--terra) 0%,var(--amber) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:800;">(Kundelik.kz)</em></span></div>
+      <div style="overflow-x:auto;">
+        <table class="gb-table">
+          <thead><tr>
+            <th style="width:40px;">№</th>
+            <th>Сабақ тақырыбы</th>
+            <th>Күні</th>
+            <th>Үй тапсырмасы</th>
+            <th style="text-align:center;">Бағалау</th>
+            <th>Мұғалім түсініктемесі</th>
+          </tr></thead>
+          <tbody>
+            ${localLessons.map((l, idx)=>{
+              var g = grades[S.user.id+'_'+l.id] || Math.floor(Math.random()*2)+4;
+              if (!grades[S.user.id+'_'+l.id]) grades[S.user.id+'_'+l.id] = g;
+              
+              var comment = g === 5 ? 'Өте жақсы жұмыс! Схема мен код дұрыс жасалған. 🌟' 
+                          : g === 4 ? 'Жақсы талпыныс! Код жұмысында сәл түзетулер қажет. 👍'
+                          : g === 3 ? 'Жаттығу қажет. Схеманы қайта қараңыз. ✍️'
+                          : 'Қайта тапсыру қажет. 🛑';
+              
+              var hw = l.title.includes('ТЖБ') || l.title.includes('БЖБ') ? 'Жоқ (Бақылау жұмысы)' : 'Тәжірибелік тапсырманы аяқтау';
+              
+              return `<tr>
+                <td style="font-weight:700;color:var(--muted);">${idx + 1}</td>
+                <td style="font-weight:700;">${l.title}</td>
+                <td style="color:var(--muted);white-space:nowrap;">${l.date}</td>
+                <td style="font-size:12.5px;color:var(--ink2);">${hw}</td>
+                <td><div class="g-cell g${g}" style="cursor:default;margin:0 auto;">${g}</div></td>
+                <td style="font-size:12px;color:var(--muted);max-width:250px;line-height:1.4;">${comment}</td>
+              </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      </div></div>`;
+      
+    el.innerHTML = html;
   }
 }
 function setGrade(stId,lesId){
@@ -1744,6 +1802,7 @@ function notify(msg){
 window.addEventListener('load',async()=>{
   var {data:{session}}=await sb.auth.getSession();
   if(!session)showAuthPage();
+  setTimeout(init3DTilt, 600);
 });
 
 // ============================================================
@@ -1896,6 +1955,56 @@ function triggerConfetti() {
   }
   draw();
 })();
+
+// Dynamic 3D Card Hover Tilt Effect
+function init3DTilt() {
+  var cards = document.querySelectorAll('.card-3d, .lesson-card, .st-card, .task-card, .test-card, .card');
+  cards.forEach(card => {
+    if (card.dataset.tiltInitialized) return;
+    card.dataset.tiltInitialized = 'true';
+    
+    card.style.transformStyle = 'preserve-3d';
+    card.style.perspective = '1000px';
+    card.style.transition = 'transform 0.15s ease-out, box-shadow 0.15s ease-out';
+    
+    var shine = document.createElement('div');
+    shine.className = 'card-shine';
+    shine.style.position = 'absolute';
+    shine.style.inset = '0';
+    shine.style.borderRadius = 'inherit';
+    shine.style.pointerEvents = 'none';
+    shine.style.background = 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.18) 0%, transparent 60%)';
+    shine.style.opacity = '0';
+    shine.style.transition = 'opacity 0.15s ease';
+    shine.style.zIndex = '5';
+    card.appendChild(shine);
+    
+    card.addEventListener('mousemove', e => {
+      var rect = card.getBoundingClientRect();
+      var x = e.clientX - rect.left;
+      var y = e.clientY - rect.top;
+      var xc = rect.width / 2;
+      var yc = rect.height / 2;
+      var dx = x - xc;
+      var dy = y - yc;
+      
+      var rx = -(dy / yc) * 8;
+      var ry = (dx / xc) * 8;
+      
+      card.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
+      
+      var px = (x / rect.width) * 100;
+      var py = (y / rect.height) * 100;
+      shine.style.background = `radial-gradient(circle at ${px}% ${py}%, rgba(255,255,255,0.2) 0%, transparent 65%)`;
+      shine.style.opacity = '1';
+    });
+    
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)';
+      shine.style.opacity = '0';
+    });
+  });
+}
 </script>
 </body>
 </html>
