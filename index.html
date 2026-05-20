@@ -521,6 +521,7 @@ em{font-style:italic;}
       <div class="sb-item" id="ni-test" onclick="go('test')"><span class="sb-icon">✦</span>Диагностикалық тест</div>
       <div class="sb-item" id="ni-lessons" onclick="go('lessons')"><span class="sb-icon">▣</span>Сабақтар</div>
       <div class="sb-item" id="ni-tasks" onclick="go('tasks')"><span class="sb-icon">▽</span>Жобалар</div>
+      <div class="sb-item" id="ni-kmj" onclick="go('kmj')"><span class="sb-icon">📑</span>ҚМЖ каталог</div>
     </div>
     <div class="sb-sec">
       <div class="sb-lbl">Бақылау</div>
@@ -615,6 +616,16 @@ em{font-style:italic;}
       <div class="eyebrow">Байланыс</div>
       <h2 class="pg-title">Кері <em>байланыс</em></h2>
       <div id="feedbackContent"></div>
+    </div>
+
+    <!-- KMJ -->
+    <div id="s-kmj" class="section">
+      <div class="eyebrow">Материалдар</div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:12px;">
+        <h2 class="pg-title" style="margin-bottom:0;">ҚМЖ <em>каталогы</em></h2>
+        <button class="btn b-terra" onclick="openAddKmjModal()">+ ҚМЖ қосу</button>
+      </div>
+      <div id="kmjContent"></div>
     </div>
   </div>
 </div>
@@ -716,14 +727,14 @@ var S = {
   role:'student', user:null, profile:null,
   tStarted:false, tDone:false, tAns:{}, tQ:0,
   fbStar:5, tasks:[], teacherTests:[], lessons:[], diagQuestions:[],
-  customProjects:[]
+  customProjects:[], kmjFiles:[]
 };
 var defaultProjects = [
-  {id:'p1',title:'Ақылды шлагбаум (Smart Barrier)',desc:'Датчик жақындаған автокөлікті анықтап, шлагбаумды автоматты түрде көтереді.',components:'Lego EV3, ультрадыбыстық датчик, сервомотор',videoUrl:'https://youtube.com/watch?v=dQw4w9WgXcQ'},
-  {id:'p2',title:'Сызық бойымен қозғалатын робот (Line Follower)',desc:'Екі түс датчигінің көмегімен қара сызықты бойлай жүретін робот.',components:'Lego EV3, түс датчиктері, орташа моторлар',videoUrl:'https://youtube.com/watch?v=dQw4w9WgXcQ'},
-  {id:'p3',title:'Кедергілерден айналып өтетін робот (Obstacle Avoidance)',desc:'Алдындағы кедергіні көріп, соқтығыспай айналып өтетін интеллектуалды робот.',components:'Lego EV3, ультрадыбыстық және жанасу датчигі',videoUrl:'https://youtube.com/watch?v=dQw4w9WgXcQ'},
-  {id:'p4',title:'Ақылды үй желдеткіші (Smart Fan)',desc:'Температура мен бөлмедегі адамды анықтап автоматты түрде қосылатын желдеткіш.',components:'Lego EV3, температура датчигі, гироскопиялық датчик',videoUrl:'https://youtube.com/watch?v=dQw4w9WgXcQ'},
-  {id:'p5',title:'Робот-манипулятор (Robot Arm)',desc:'Заттарды бір орыннан екінші орынға тасымалдайтын және сұрыптайтын манипулятор қондырғысы.',components:'Lego EV3, жанасу датчигі, сервомоторлар',videoUrl:'https://youtube.com/watch?v=dQw4w9WgXcQ'}
+  {id:'p1',title:'Гироскоппен квадрат бойымен жүретін робот',desc:'Робот дәл 90° бұрылып, квадрат сызады.',components:'Lego EV3, гироскоп датчигі'},
+  {id:'p2',title:'Сызық бойымен жүретін робот',desc:'Робот қара сызықты «іздеп» жүреді.',components:'Lego EV3, түс датчигі'},
+  {id:'p3',title:'Қашықтықты өлшейтін робот',desc:'Алдындағы заттың қашықтығын өлшеп, экранда көрсетеді.',components:'Lego EV3, ультрадыбыстық датчик'},
+  {id:'p4',title:'Кедергіден қашатын робот',desc:'Кедергіні байқаса — артқа жүріп, айналып өтеді.',components:'Lego EV3, ультрадыбыстық датчик'},
+  {id:'p5',title:'Робо-сумо',desc:'Қарсыласты іздеп шабады, шекарадан шықпайды.',components:'Lego EV3, ультрадыбыстық және түс датчигі'}
 ];
 var localLessons = [
   {id:'l1',date:'08.01.2026',dn:'08',dm:'ҚАҢ',type:'Сабақ',title:'Роботтар туралы: тарих пен болашақ',desc:'Роботтар тарихы, қолданылу салалары, Қазақстандағы робототехника дамуы.',videoUrl:'',tasks:['5 робот түрін дәптерге жазу','Tinkercad-та аккаунт ашу','Топтық талқылау: робот не істей алады?']},
@@ -865,6 +876,18 @@ async function initApp(){
     S.customProjects = [];
   }
 
+  // Load KMJ files from localStorage
+  var savedKmj = localStorage.getItem('kmj_files_' + (S.user ? S.user.id : 'anon'));
+  if (savedKmj) {
+    try { S.kmjFiles = JSON.parse(savedKmj); } catch(e) { S.kmjFiles = []; }
+  } else {
+    S.kmjFiles = [
+      {id:'k1',name:'Робототехника кіріспе сабақ жоспары (ҚМЖ).docx',date:'15.05.2026',size:'24.5 KB',content:'data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,UEsDBBQAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAA='},
+      {id:'k2',name:'Lego EV3 датчиктермен жұмыс істеу жоспары.docx',date:'18.05.2026',size:'38.1 KB',content:'data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,UEsDBBQAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAA='}
+    ];
+    localStorage.setItem('kmj_files_' + (S.user ? S.user.id : 'anon'), JSON.stringify(S.kmjFiles));
+  }
+
   await loadTasksFromDB();
   await loadStudentsFromDB();
   await loadDiagQuestionsFromDB();
@@ -925,6 +948,7 @@ function go(sec){
   if(sec==='progress')renderProgress();
   if(sec==='method'){renderMethod();showMTab('ar',document.querySelector('.m-tab'));}
   if(sec==='feedback')renderFeedback();
+  if(sec==='kmj')renderKmj();
   setTimeout(init3DTilt, 50);
 }
 function toggleSidebar(){
@@ -947,7 +971,7 @@ function renderHomeStats(){
   var d=[
     {n:localLessons.length,l:'Барлық сабақ',s:'3 цикл',c:'ci-t',icon:'▣'},
     {n:S.teacherTests.length+1,l:'Тест',s:'Диагностика+Мұғалім',c:'ci-a',icon:'✦'},
-    {n:S.tasks.filter(t=>t.type==='tjb').length,l:'ТЖБ',s:'Тоқсандық',c:'ci-p',icon:'◆'},
+    {n:S.kmjFiles.length,l:'ҚМЖ каталог',s:'Word құжаттар',c:'ci-p',icon:'📄'},
     {n:defaultProjects.length + S.customProjects.length,l:'Жобалар',s:'Конструктор',c:'ci-tl',icon:'🤖'},
   ];
   document.getElementById('homeStats').innerHTML=d.map(x=>
@@ -1309,7 +1333,6 @@ function renderTasksSection(){
   var el = document.getElementById('projectsList');
   if(!el) return;
   el.innerHTML = projects.map((p, idx) => {
-    var vidBtn = p.videoUrl ? `<button class="btn b-outline b-sm" onclick="openVideo('${p.videoUrl}')">📹 Видео</button>` : '';
     var delBtn = p.id.startsWith('custom_') ? `<button class="btn b-outline b-sm" onclick="deleteCustomProject('${p.id}')" style="margin-left:auto;color:var(--terra);border-color:rgba(194, 67, 30, 0.2);">🗑 Жою</button>` : '';
     return `<div class="card" style="display:flex; flex-direction:column; justify-content:space-between; height:100%; min-height: 250px;">
       <div>
@@ -1325,7 +1348,6 @@ function renderTasksSection(){
           <div style="font-size:12.5px; color:var(--ink); font-weight:600;">${p.components}</div>
         </div>
         <div style="display:flex; gap:8px; align-items:center;">
-          ${vidBtn}
           ${delBtn}
         </div>
       </div>
@@ -1351,10 +1373,6 @@ function openAddProjectModal() {
       <label class="form-label">Қолданылатын бөлшектер / Датчиктер</label>
       <input class="form-input" id="newProjComp" placeholder="Мысалы: Lego EV3, ультрадыбыстық датчик">
     </div>
-    <div class="form-group">
-      <label class="form-label">Бейне сілтемесі (YouTube, қосымша)</label>
-      <input class="form-input" id="newProjVideo" placeholder="https://youtube.com/watch?v=...">
-    </div>
     <button class="btn b-terra" onclick="saveNewProject()">✓ Жобаны сақтау</button>
   `;
   openModal('submitModal');
@@ -1364,7 +1382,6 @@ function saveNewProject() {
   var title = document.getElementById('newProjTitle').value.trim();
   var desc = document.getElementById('newProjDesc').value.trim();
   var comp = document.getElementById('newProjComp').value.trim();
-  var video = document.getElementById('newProjVideo').value.trim();
   if(!title || !desc || !comp) {
     notify('Барлық міндетті өрістерді толтырыңыз (Атауы, сипаттамасы, бөлшектер)');
     return;
@@ -1373,8 +1390,7 @@ function saveNewProject() {
     id: 'custom_' + Date.now(),
     title: title,
     desc: desc,
-    components: comp,
-    videoUrl: video || null
+    components: comp
   };
   S.customProjects.push(newProj);
   localStorage.setItem('custom_projects_' + (S.user ? S.user.id : 'anon'), JSON.stringify(S.customProjects));
@@ -1392,6 +1408,114 @@ function deleteCustomProject(id) {
   renderHomeStats();
   renderRecentTasks();
   notify('Жоба жойылды');
+}
+
+// ============================================================
+// KMJ CATALOG
+// ============================================================
+function renderKmj(){
+  var el = document.getElementById('kmjContent');
+  if(!el) return;
+  var files = [...S.kmjFiles];
+  if(!files.length){
+    el.innerHTML = `<div class="card card-lg" style="text-align:center;padding:52px;">
+      <div style="font-size:42px;margin-bottom:14px;">📑</div>
+      <div class="serif" style="font-size:22px;font-weight:700;margin-bottom:8px;">ҚМЖ файлдары жоқ</div>
+      <div style="font-size:14px;color:var(--muted);margin-bottom:20px;">Каталогқа алғашқы ҚМЖ құжатын жүктеңіз</div>
+      <button class="btn b-terra b-sm" onclick="openAddKmjModal()">+ ҚМЖ қосу</button>
+    </div>`;
+    return;
+  }
+  
+  el.innerHTML = `<div class="card"><div class="c-title"><div class="c-icon ci-t">📑</div><span class="serif">Жүктелген файлдар <em style="font-style:italic;color:var(--terra)">тізімі</em></span></div>
+    <div style="overflow-x:auto;">
+      <table class="gb-table">
+        <thead>
+          <tr>
+            <th>Файл атауы</th>
+            <th>Жүктелген күні</th>
+            <th>Файл өлшемі</th>
+            <th style="text-align:right;">Әрекеттер</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${files.map(f => {
+            var downloadBtn = `<a href="${f.content}" download="${f.name}" class="btn b-outline b-sm" style="display:inline-flex;align-items:center;gap:6px;text-decoration:none;"><span style="font-size:14px;">📥</span> Жүктеу</a>`;
+            var delBtn = `<button class="btn b-outline b-sm" onclick="deleteKmjFile('${f.id}')" style="color:var(--terra);border-color:rgba(194, 67, 30, 0.2);margin-left:8px;display:inline-flex;align-items:center;gap:4px;">🗑 Өшіру</button>`;
+            return `<tr>
+              <td style="font-weight:700; display:flex; align-items:center; gap:10px;">
+                <span style="font-size:20px;">📄</span> 
+                <span style="word-break:break-all;">${f.name}</span>
+              </td>
+              <td style="font-size:13px; color:var(--muted);">${f.date}</td>
+              <td style="font-size:13px; color:var(--muted);">${f.size}</td>
+              <td style="text-align:right; white-space:nowrap;">
+                ${downloadBtn}
+                ${delBtn}
+              </td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+function openAddKmjModal() {
+  document.getElementById('submitModalContent').innerHTML = `
+    <div class="eyebrow">ҚМЖ каталогы</div>
+    <div class="m-title">Жаңа ҚМЖ жоспарын қосу</div>
+    <div class="m-sub">Мұнда Microsoft Word (.doc, .docx) форматындағы ҚМЖ құжатын жүктеңіз</div>
+    <div class="form-group">
+      <label class="form-label">Құжат файлы</label>
+      <input type="file" class="form-input" id="newKmjFile" accept=".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="padding:10px;">
+    </div>
+    <button class="btn b-terra" onclick="saveKmjFile()" style="margin-top:10px;">✓ Файлды сақтау</button>
+  `;
+  openModal('submitModal');
+}
+
+function saveKmjFile() {
+  var fileInput = document.getElementById('newKmjFile');
+  if(!fileInput || !fileInput.files || fileInput.files.length === 0) {
+    notify('Құжат файлын таңдаңыз');
+    return;
+  }
+  var file = fileInput.files[0];
+  
+  var sizeStr = "";
+  if (file.size < 1024 * 1024) {
+    sizeStr = (file.size / 1024).toFixed(1) + " KB";
+  } else {
+    sizeStr = (file.size / (1024 * 1024)).toFixed(1) + " MB";
+  }
+  
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var fileContent = e.target.result;
+    var newKmj = {
+      id: 'kmj_' + Date.now(),
+      name: file.name,
+      date: new Date().toLocaleDateString('ru'),
+      size: sizeStr,
+      content: fileContent
+    };
+    S.kmjFiles.push(newKmj);
+    localStorage.setItem('kmj_files_' + (S.user ? S.user.id : 'anon'), JSON.stringify(S.kmjFiles));
+    closeModal('submitModal');
+    renderKmj();
+    renderHomeStats();
+    notify('✓ Жаңа ҚМЖ құжаты сәтті жүктелді!');
+  };
+  reader.readAsDataURL(file);
+}
+
+function deleteKmjFile(id) {
+  S.kmjFiles = S.kmjFiles.filter(f => f.id !== id);
+  localStorage.setItem('kmj_files_' + (S.user ? S.user.id : 'anon'), JSON.stringify(S.kmjFiles));
+  renderKmj();
+  renderHomeStats();
+  notify('Файл өшірілді');
 }
 
 async function deleteItem(kind,id){
