@@ -757,8 +757,21 @@ var buildingTestQuestions = [];
 // AUTH STATE
 // ============================================================
 sb.auth.onAuthStateChange(async (event, session) => {
-  if (session && session.user) { await loadUserProfile(session.user); }
-  else { showAuthPage(); }
+  if (session && session.user) {
+    var cached = localStorage.getItem('cached_profile_' + session.user.id);
+    if (cached) {
+      try {
+        var profile = JSON.parse(cached);
+        S.user = session.user;
+        S.profile = profile;
+        S.role = profile.role;
+        showApp(true);
+      } catch(e) {}
+    }
+    await loadUserProfile(session.user);
+  } else {
+    showAuthPage();
+  }
 });
 
 async function loadUserProfile(user) {
@@ -768,16 +781,21 @@ async function loadUserProfile(user) {
     if (profile) { 
       S.profile = profile; 
       S.role = profile.role; 
-      showApp(); 
+      localStorage.setItem('cached_profile_' + user.id, JSON.stringify(profile));
+      showApp(true); 
     } else { 
       console.error("Profile load failed:", error);
-      showAuthPage(); 
-      notify('Профиль жүктелмеді'); 
+      if (!S.profile) {
+        showAuthPage(); 
+        notify('Профиль жүктелмеді');
+      }
     }
   } catch (e) {
     console.error("Uncaught profile load error:", e);
-    showAuthPage();
-    notify('Желілік байланыс қатесі. Профиль жүктелмеді.');
+    if (!S.profile) {
+      showAuthPage();
+      notify('Желілік байланыс қатесі. Профиль жүктелмеді.');
+    }
   }
 }
 function showAuthPage(){
@@ -785,11 +803,11 @@ function showAuthPage(){
   document.getElementById('authPage').classList.remove('hidden');
   document.getElementById('app').style.display='none';
 }
-function showApp(){
+function showApp(backgroundSync = false){
   document.getElementById('loadingScreen').classList.add('hidden');
   document.getElementById('authPage').classList.add('hidden');
   document.getElementById('app').style.display='block';
-  initApp();
+  initApp(backgroundSync);
 }
 
 // ============================================================
@@ -851,7 +869,7 @@ async function doLogout(){
 // ============================================================
 // APP INIT
 // ============================================================
-async function initApp(){
+async function initApp(backgroundSync = false){
   var name=S.profile?S.profile.full_name:(S.user?S.user.email:'—');
   var role=S.role;
   document.getElementById('tbAv').textContent=name[0]?name[0].toUpperCase():'?';
@@ -890,13 +908,53 @@ async function initApp(){
     localLessons = [];
   }
 
-  await loadTasksFromDB();
-  await loadStudentsFromDB();
-  await loadDiagQuestionsFromDB();
+  // Load DB cache
+  var cachedTasks = localStorage.getItem('cached_tasks_' + (S.user ? S.user.id : 'anon'));
+  if (cachedTasks) {
+    try { S.tasks = JSON.parse(cachedTasks); } catch(e) {}
+  }
+  var cachedTests = localStorage.getItem('cached_tests_' + (S.user ? S.user.id : 'anon'));
+  if (cachedTests) {
+    try { S.teacherTests = JSON.parse(cachedTests); } catch(e) {}
+  }
+  var cachedStudents = localStorage.getItem('cached_students_' + (S.user ? S.user.id : 'anon'));
+  if (cachedStudents) {
+    try { localStudents = JSON.parse(cachedStudents); } catch(e) {}
+  }
+  var cachedQuestions = localStorage.getItem('cached_questions_' + (S.user ? S.user.id : 'anon'));
+  if (cachedQuestions) {
+    try { S.diagQuestions = JSON.parse(cachedQuestions); } catch(e) {}
+  }
+
+  // Render UI immediately using cache or defaults
   renderHomeStats();
   renderUpcoming();
   renderRecentTasks();
   go('home');
+
+  // Load fresh database data in parallel
+  var dbPromise = Promise.all([
+    loadTasksFromDB(),
+    loadStudentsFromDB(),
+    loadDiagQuestionsFromDB()
+  ]).then(() => {
+    // Save fresh data to local cache
+    localStorage.setItem('cached_tasks_' + (S.user ? S.user.id : 'anon'), JSON.stringify(S.tasks));
+    localStorage.setItem('cached_tests_' + (S.user ? S.user.id : 'anon'), JSON.stringify(S.teacherTests));
+    localStorage.setItem('cached_students_' + (S.user ? S.user.id : 'anon'), JSON.stringify(localStudents));
+    localStorage.setItem('cached_questions_' + (S.user ? S.user.id : 'anon'), JSON.stringify(S.diagQuestions));
+    
+    // Re-render UI with latest database values
+    renderHomeStats();
+    renderUpcoming();
+    renderRecentTasks();
+  }).catch(e => {
+    console.warn("Background DB sync failed:", e);
+  });
+
+  if (!backgroundSync) {
+    await dbPromise;
+  }
 }
 async function loadTasksFromDB(){
   try {
