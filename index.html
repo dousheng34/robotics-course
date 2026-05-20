@@ -736,13 +736,7 @@ var defaultProjects = [
   {id:'p4',title:'Кедергіден қашатын робот',desc:'Кедергіні байқаса — артқа жүріп, айналып өтеді.',components:'Lego EV3, ультрадыбыстық датчик'},
   {id:'p5',title:'Робо-сумо',desc:'Қарсыласты іздеп шабады, шекарадан шықпайды.',components:'Lego EV3, ультрадыбыстық және түс датчигі'}
 ];
-var localLessons = [
-  {id:'l1',date:'08.01.2026',dn:'08',dm:'ҚАҢ',type:'Сабақ',title:'Роботтар туралы: тарих пен болашақ',desc:'Роботтар тарихы, қолданылу салалары, Қазақстандағы робототехника дамуы.',videoUrl:'',tasks:['5 робот түрін дәптерге жазу','Tinkercad-та аккаунт ашу','Топтық талқылау: робот не істей алады?']},
-  {id:'l2',date:'15.01.2026',dn:'15',dm:'ҚАҢ',type:'Сабақ',title:'Датчиктер мен Arduino негіздері',desc:'Arduino платасы, датчик түрлері, алғашқы байланыстар, LED жарықтандыру.',videoUrl:'',tasks:['LED жарықтандыру схемасы','Датчик диаграммасы сызу','Tinkercad симуляциясы']},
-  {id:'l3',date:'22.01.2026',dn:'22',dm:'ҚАҢ',type:'ТЖБ',title:'1-ТЖБ: Роботика негіздері',desc:'Тоқсандық жазба бақылау жұмысы — 1-тоқсан материалы бойынша.',videoUrl:'',tasks:['ТЖБ тапсырмаларын орындау','Жауаптарды дәптерде тіркеу']},
-  {id:'l4',date:'05.02.2026',dn:'05',dm:'АҚП',type:'Сабақ',title:'PID алгоритмі',desc:'Пропорционалды-интегралды-дифференциалды реттеу. Жылдам тоқтайтын робот.',videoUrl:'',tasks:['PID формуласын конспект жазу','Tinkercad симуляциясы']},
-  {id:'l5',date:'19.02.2026',dn:'19',dm:'АҚП',type:'БЖБ',title:'2-БЖБ: Датчиктер мен алгоритмдер',desc:'Бөлім жиынтық бағалау — датчиктер және алгоритмдер тақырыбы.',videoUrl:'',tasks:['БЖБ тапсырмаларын орындау']},
-];
+var localLessons = [];
 var DEFAULT_DIAG_QUESTIONS = [
   {q:'Робот деген не?',opts:['Адам тәрізді машина ғана','Берілген бағдарламамен жұмыс атқаратын автоматты құрылғы','Тек зауытта пайдаланылатын жабдық','Компьютерлік ойын кейіпкері'],a:1},
   {q:'Роботтехника саласын коммерциялық тұрғыда кім бастады?',opts:['Исаак Ньютон','Джордж Девол және Джозеф Энгельбергер','Никола Тесла','Билл Гейтс'],a:1},
@@ -886,6 +880,14 @@ async function initApp(){
       {id:'k2',name:'Lego EV3 датчиктермен жұмыс істеу жоспары.docx',date:'18.05.2026',size:'38.1 KB',content:'data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,UEsDBBQAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAA='}
     ];
     localStorage.setItem('kmj_files_' + (S.user ? S.user.id : 'anon'), JSON.stringify(S.kmjFiles));
+  }
+
+  // Load localLessons from localStorage
+  var savedLessons = localStorage.getItem('local_lessons_' + (S.user ? S.user.id : 'anon'));
+  if (savedLessons) {
+    try { localLessons = JSON.parse(savedLessons); } catch(e) { localLessons = []; }
+  } else {
+    localLessons = [];
   }
 
   await loadTasksFromDB();
@@ -1266,6 +1268,15 @@ function renderLessons(){
       </div>`;
   } else { tp.innerHTML=''; }
 
+  if(!localLessons.length){
+    document.getElementById('lList').innerHTML = `<div class="card card-lg" style="text-align:center;padding:52px;border: 1px dashed var(--line2);background:transparent;">
+      <div style="font-size:42px;margin-bottom:14px;">📖</div>
+      <div class="serif" style="font-size:22px;font-weight:700;margin-bottom:8px;">Сабақтар жоқ</div>
+      <div style="font-size:14px;color:var(--muted);">Жарияланған сабақтар тізімі бос. Жаңа сабақ қосыңыз.</div>
+    </div>`;
+    return;
+  }
+
   document.getElementById('lList').innerHTML=
     `<div class="g3">${localLessons.map((l,i)=>`
       <div class="lesson-card" onclick="openLesson(${i})">
@@ -1279,6 +1290,7 @@ function renderLessons(){
         <div class="lc-footer">
           <span class="lc-open">▶ АШУ</span>
           ${l.videoUrl?'<span style="font-size:12px;color:var(--teal);font-weight:600;">📹 Видео</span>':''}
+          ${isTeacher ? `<button class="btn b-outline b-sm" onclick="event.stopPropagation(); deleteLesson(${i})" style="color:var(--terra);border-color:rgba(194, 67, 30, 0.2);margin-left:auto;padding:2px 8px;font-size:11px;display:inline-flex;align-items:center;gap:4px;">🗑 Өшіру</button>` : ''}
         </div>
       </div>`).join('')}</div>`;
 }
@@ -1305,6 +1317,14 @@ function openLesson(idx){
     ${!isTeacher?`<button class="btn b-terra" style="margin-top:20px;" onclick="submitWork('${l.id}','${l.title}')">✓ Орындалды деп белгілеу</button>`:''}`;
   openModal('lessonModal');
 }
+function deleteLesson(idx) {
+  localLessons.splice(idx, 1);
+  localStorage.setItem('local_lessons_' + (S.user ? S.user.id : 'anon'), JSON.stringify(localLessons));
+  renderLessons();
+  renderHomeStats();
+  renderUpcoming();
+  notify('Сабақ өшірілді');
+}
 function ytEmbed(url){var m=url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))(\w[\w-]+)/);return m?`https://www.youtube.com/embed/${m[1]}`:url;}
 async function addLesson(){
   var t=document.getElementById('lesT').value.trim();
@@ -1321,7 +1341,18 @@ async function addLesson(){
     id:'u'+Date.now(),date:dateStr,dn:String(dateObj.getDate()).padStart(2,'0'),
     dm:months[dateObj.getMonth()],type,title:t,desc,videoUrl:vid,tasks
   });
+  localStorage.setItem('local_lessons_' + (S.user ? S.user.id : 'anon'), JSON.stringify(localLessons));
+  
+  // Clear inputs
+  document.getElementById('lesT').value = '';
+  document.getElementById('lesDate').value = '';
+  document.getElementById('lesDesc').value = '';
+  document.getElementById('lesTasks').value = '';
+  document.getElementById('lesVideo').value = '';
+  
   renderLessons();
+  renderHomeStats();
+  renderUpcoming();
   notify('✓ Сабақ жарияланды');
 }
 
