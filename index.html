@@ -689,7 +689,8 @@ try {
       },
       signInWithPassword: async () => { return { error: { message: "Supabase байланысы сәтсіз аяқталды. Интернет қосылымын тексеріңіз." } }; },
       signUp: async () => { return { error: { message: "Supabase байланысы сәтсіз аяқталды. Интернет қосылымын тексеріңіз." } }; },
-      signOut: async () => {}
+      signOut: async () => {},
+      getSession: async () => { return { data: { session: null }, error: null }; }
     },
     from: () => {
       const query = {
@@ -757,9 +758,22 @@ sb.auth.onAuthStateChange(async (event, session) => {
 
 async function loadUserProfile(user) {
   S.user = user;
-  const {data:profile} = await sb.from('profiles').select('*').eq('id',user.id).single();
-  if (profile) { S.profile = profile; S.role = profile.role; showApp(); }
-  else { showAuthPage(); notify('Профиль жүктелмеді'); }
+  try {
+    const {data:profile, error} = await sb.from('profiles').select('*').eq('id',user.id).single();
+    if (profile) { 
+      S.profile = profile; 
+      S.role = profile.role; 
+      showApp(); 
+    } else { 
+      console.error("Profile load failed:", error);
+      showAuthPage(); 
+      notify('Профиль жүктелмеді'); 
+    }
+  } catch (e) {
+    console.error("Uncaught profile load error:", e);
+    showAuthPage();
+    notify('Желілік байланыс қатесі. Профиль жүктелмеді.');
+  }
 }
 function showAuthPage(){
   document.getElementById('loadingScreen').classList.add('hidden');
@@ -860,20 +874,38 @@ async function initApp(){
   go('home');
 }
 async function loadTasksFromDB(){
-  var {data}=await sb.from('tasks').select('*').order('created_at',{ascending:false});
-  S.tasks=data||[];
-  var {data:tests}=await sb.from('teacher_tests').select('*').order('created_at',{ascending:false});
-  S.teacherTests=tests||[];
+  try {
+    var {data}=await sb.from('tasks').select('*').order('created_at',{ascending:false});
+    S.tasks=data||[];
+  } catch(e) {
+    console.error("Failed to load tasks:", e);
+    S.tasks = [];
+  }
+  try {
+    var {data:tests}=await sb.from('teacher_tests').select('*').order('created_at',{ascending:false});
+    S.teacherTests=tests||[];
+  } catch(e) {
+    console.error("Failed to load tests:", e);
+    S.teacherTests = [];
+  }
 }
 async function loadStudentsFromDB(){
-  var {data}=await sb.from('profiles').select('*').eq('role','student');
-  localStudents=data||[];
+  try {
+    var {data}=await sb.from('profiles').select('*').eq('role','student');
+    localStudents=data||[];
+  } catch(e) {
+    console.error("Failed to load students:", e);
+    localStudents = [];
+  }
 }
 async function loadDiagQuestionsFromDB(){
-  // Load teacher-defined diagnostic questions if available
-  var {data}=await sb.from('tasks').select('*').eq('type','diag_test').order('created_at',{ascending:false}).limit(1);
-  if(data&&data.length&&data[0].questions){
-    try{var q=JSON.parse(data[0].questions||'[]');if(q.length>0)S.diagQuestions=q;}catch(e){}
+  try {
+    var {data}=await sb.from('tasks').select('*').eq('type','diag_test').order('created_at',{ascending:false}).limit(1);
+    if(data&&data.length&&data[0].questions){
+      try{var q=JSON.parse(data[0].questions||'[]');if(q.length>0)S.diagQuestions=q;}catch(e){}
+    }
+  } catch(e) {
+    console.error("Failed to load diagnostic questions:", e);
   }
 }
 
@@ -949,7 +981,7 @@ function renderRecentTasks(){
     <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--line2);cursor:pointer;" onclick="go('tasks')">
       <div>
         <div style="font-size:14.5px;font-weight:700;margin-bottom:3px;color:var(--ink);">${p.title}</div>
-        <div style="font-size:11.5px;color:var(--muted);">${p.components.split(',')[0]}</div>
+        <div style="font-size:11.5px;color:var(--muted);">${p.components ? p.components.split(',')[0] : 'Жоба құрамдас бөліктері'}</div>
       </div>
       <span class="pill p-t">Жоба</span>
     </div>`).join('');
@@ -1787,8 +1819,13 @@ function notify(msg){
 // INIT
 // ============================================================
 window.addEventListener('load',async()=>{
-  var {data:{session}}=await sb.auth.getSession();
-  if(!session)showAuthPage();
+  try {
+    var {data:{session}}=await sb.auth.getSession();
+    if(!session)showAuthPage();
+  } catch(e) {
+    console.error("Error checking session on load:", e);
+    showAuthPage();
+  }
   setTimeout(init3DTilt, 600);
 });
 
