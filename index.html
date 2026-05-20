@@ -862,9 +862,9 @@ async function doRegister(){
 }
 async function doLogout(){
   try {
-    await sb.auth.signOut();
+    sb.auth.signOut().catch(e => console.error("SignOut background error:", e));
   } catch(e) {
-    console.error("SignOut error:", e);
+    console.error("SignOut launch error:", e);
   }
   if (S.user) {
     localStorage.removeItem('cached_profile_' + S.user.id);
