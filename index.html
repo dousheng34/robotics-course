@@ -640,11 +640,73 @@ em{font-style:italic;}
 
 <script>
 // ============================================================
+// GLOBAL ERROR HANDLER & SAFETY FALLBACKS
+// ============================================================
+window.onerror = function(message, source, lineno, colno, error) {
+  console.error("Global error caught:", message, "at", source, ":", lineno);
+  var ls = document.getElementById('loadingScreen');
+  if (ls && !ls.classList.contains('hidden')) {
+    ls.classList.add('hidden');
+  }
+  var authPage = document.getElementById('authPage');
+  if (authPage && authPage.classList.contains('hidden')) {
+    authPage.classList.remove('hidden');
+  }
+  return false;
+};
+
+setTimeout(() => {
+  var ls = document.getElementById('loadingScreen');
+  if (ls && !ls.classList.contains('hidden')) {
+    console.warn("Safety fallback triggered: loading screen took too long.");
+    ls.classList.add('hidden');
+    var authPage = document.getElementById('authPage');
+    if (authPage && authPage.classList.contains('hidden')) {
+      authPage.classList.remove('hidden');
+    }
+  }
+}, 3000);
+
+// ============================================================
 // SUPABASE
 // ============================================================
 const SUPABASE_URL = 'https://qthftkrbkonbltexgaln.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF0aGZ0a3Jia29uYmx0ZXhnYWxuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNzEyMzEsImV4cCI6MjA5NDY0NzIzMX0.S3q0zSgcJmoQnl117tpz1ibBEFqc4WY6CltXDDxFQFc';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+var sb;
+try {
+  if (typeof supabase !== 'undefined') {
+    sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  } else {
+    throw new Error("Supabase library not loaded.");
+  }
+} catch(e) {
+  console.error("Supabase failed to initialize, using fallback:", e);
+  sb = {
+    auth: {
+      onAuthStateChange: (cb) => { 
+        setTimeout(() => cb('SIGNED_OUT', null), 100); 
+      },
+      signInWithPassword: async () => { return { error: { message: "Supabase байланысы сәтсіз аяқталды. Интернет қосылымын тексеріңіз." } }; },
+      signUp: async () => { return { error: { message: "Supabase байланысы сәтсіз аяқталды. Интернет қосылымын тексеріңіз." } }; },
+      signOut: async () => {}
+    },
+    from: () => {
+      const query = {
+        select: () => query,
+        eq: () => query,
+        single: () => query,
+        order: () => query,
+        limit: () => query,
+        insert: () => query,
+        delete: () => query,
+        upsert: () => query,
+        then: (resolve) => resolve({ data: null, error: new Error("Offline mode") })
+      };
+      return query;
+    }
+  };
+}
 
 // ============================================================
 // STATE
