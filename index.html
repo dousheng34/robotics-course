@@ -1019,13 +1019,29 @@ function go(sec){
   setTimeout(init3DTilt, 50);
 }
 function toggleSidebar(){
-  document.getElementById('sidebar').classList.toggle('closed');
-  document.getElementById('overlay').classList.toggle('show');
+  var sb = document.getElementById('sidebar');
+  var ov = document.getElementById('overlay');
+  var mw = document.getElementById('mainWrap');
+  if(window.innerWidth<=960){
+    sb.classList.toggle('open');
+    ov.classList.toggle('show');
+  } else {
+    sb.classList.toggle('closed');
+    if (mw) {
+      mw.classList.toggle('full', sb.classList.contains('closed'));
+    }
+  }
 }
 function closeSidebar(){
+  var sb = document.getElementById('sidebar');
+  var ov = document.getElementById('overlay');
+  var mw = document.getElementById('mainWrap');
   if(window.innerWidth<=960){
-    document.getElementById('sidebar').classList.add('closed');
-    document.getElementById('overlay').classList.remove('show');
+    sb.classList.remove('open');
+    ov.classList.remove('show');
+  } else {
+    sb.classList.add('closed');
+    if (mw) mw.classList.add('full');
   }
 }
 function openModal(id){document.getElementById(id).classList.add('show');}
