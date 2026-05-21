@@ -883,8 +883,15 @@ async function initApp(backgroundSync = false){
   document.getElementById('tbUName').textContent=name;
   document.getElementById('tbURole').textContent=role==='teacher'?'МҰҒАЛІМ':'ОҚУШЫ';
   document.getElementById('homeGreetName').textContent=name.split(' ')[0]||name;
-  if(role==='student'){document.getElementById('ni-progress').style.display='flex';document.getElementById('gradesLabel').textContent='Менің бағаларым';}
-  else{document.getElementById('ni-progress').style.display='none';document.getElementById('gradesLabel').textContent='Бағалар журналы';}
+  if(role==='student'){
+    document.getElementById('ni-progress').style.display='flex';
+    document.getElementById('gradesLabel').textContent='Менің бағаларым';
+    document.getElementById('ni-kmj').style.display='none';
+  } else {
+    document.getElementById('ni-progress').style.display='none';
+    document.getElementById('gradesLabel').textContent='Бағалар журналы';
+    document.getElementById('ni-kmj').style.display='flex';
+  }
   if(window.innerWidth<=960) document.getElementById('sidebar').classList.add('closed');
   
   // Load custom projects from localStorage
@@ -1003,6 +1010,10 @@ async function loadDiagQuestionsFromDB(){
 // NAVIGATION
 // ============================================================
 function go(sec){
+  if(sec==='kmj' && S.role==='student'){
+    go('home');
+    return;
+  }
   document.querySelectorAll('.section').forEach(el=>el.classList.remove('on'));
   document.querySelectorAll('.sb-item').forEach(el=>el.classList.remove('on'));
   var s=document.getElementById('s-'+sec);if(s)s.classList.add('on');
@@ -1054,7 +1065,7 @@ function renderHomeStats(){
   var d=[
     {n:localLessons.length,l:'Барлық сабақ',s:'3 цикл',c:'ci-t',icon:'▣'},
     {n:S.teacherTests.length+1,l:'Тест',s:'Диагностика+Мұғалім',c:'ci-a',icon:'✦'},
-    {n:S.kmjFiles.length,l:'ҚМЖ каталог',s:'Word құжаттар',c:'ci-p',icon:'📄'},
+    ...(S.role === 'teacher' ? [{n:S.kmjFiles.length,l:'ҚМЖ каталог',s:'Word құжаттар',c:'ci-p',icon:'📄'}] : []),
     {n:defaultProjects.length + S.customProjects.length,l:'Жобалар',s:'Конструктор',c:'ci-tl',icon:'🤖'},
   ];
   document.getElementById('homeStats').innerHTML=d.map(x=>
